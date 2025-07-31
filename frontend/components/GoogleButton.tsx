@@ -1,13 +1,14 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View, Image } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 interface GoogleButtonProps {
     googleText: string;
+    handleLogin : ()=>void
   }
 
-const GoogleButton: React.FC<GoogleButtonProps>  = ({googleText}) => {
+const GoogleButton: React.FC<GoogleButtonProps>  = ({googleText,handleLogin}) => {
   return (
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity style={styles.button} onPress={handleLogin} >
       <Image
         source={{
           uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/2048px-Google_%22G%22_logo.svg.png',

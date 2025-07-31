@@ -1,14 +1,17 @@
 import GoogleButton from '@/components/GoogleButton';
+import { useAuth } from "@/context/auth";
 import { Link } from 'expo-router';
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const SigninPage = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const {signIn}= useAuth();
 
   const handleLogin = () => {
     // Your login logic here
+    console.log("hello")
   };
 
   return (
@@ -41,9 +44,11 @@ const SigninPage = () => {
         <TouchableOpacity style={styles.signinButton} onPress={handleLogin}>
           <Text style={styles.signinButtonText}>SIGN IN</Text>
         </TouchableOpacity>
-
+        <Text onPress={handleLogin} className='text-white' >
+          hello
+        </Text>
         <TouchableOpacity>
-          <GoogleButton googleText="Sign in  with Google"/>
+          <GoogleButton googleText="Sign in  with Google" handleLogin={signIn}/>
         </TouchableOpacity>
 
         <View style={styles.footer}>
