@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "aimemory",
+    "scheme": "ai-memory",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -17,7 +17,19 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.aimemory"
+      "package": "com.sudhanshu15.aimemory",
+      "intentFilters": [
+        {
+           "action": "VIEW",
+          "data": [
+            {
+              "scheme": "com.sudhanshu15.aimemory"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+        
+      ]
     },
     "web": {
       "bundler": "metro",
