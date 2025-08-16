@@ -166,7 +166,7 @@ const HomePage: React.FC = () => {
         </TouchableOpacity>
 
         {/* User Profile Icon (Top Right) */}
-        <TouchableOpacity style={styles.topNavIcon}>
+        <TouchableOpacity style={styles.topNavIcon} onPress={()=>router.push("/profile/page")}>
           <LinearGradient
             colors={['rgba(255,255,255,0.15)', 'rgba(255,255,255,0.05)']}
             style={styles.navIconContainer}
@@ -350,6 +350,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     zIndex: 100,
+    marginTop:50
   },
   topNavIcon: {
     borderRadius: 20,
