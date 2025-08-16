@@ -11,8 +11,8 @@ interface ChainInput {
   question: string;
 }
 
-// Interface for the document structure
-interface Document {
+// Interface for vector search documents (avoid clashing with DOM Document)
+interface VectorDocument {
   pageContent: string;
   metadata?: any;
 }
@@ -38,6 +38,7 @@ function validateEnvironment() {
 }
 
 export async function askQuestion(query: string): Promise<string> {
+  console.log("reached here")
   // Input validation
   if (!query || typeof query !== 'string') {
     throw new Error('Query must be a non-empty string');
@@ -109,10 +110,9 @@ Answer:`);
     console.log('🔍 Retrieving relevant documents...');
     const docs = await retriever.getRelevantDocuments(query);
     console.log(`📄 Found ${docs.length} relevant documents`);
-    
     let context = "No relevant documents found in the database.";
     if (docs.length > 0) {
-      context = docs.map((doc: Document) => doc.pageContent).join("\n\n");
+      context = docs.map((doc: VectorDocument) => doc.pageContent).join("\n\n");
     }
     
     // Step 2: Format the prompt
@@ -124,11 +124,25 @@ Answer:`);
     // Step 3: Generate response
     const response = await llm.invoke(formattedPrompt);
     
-    // Step 4: Extract the text content from the response
-    const answer = response.content as string;
+    // Step 4: Extract the text content from the response safely
+    let answerText = '';
+    const content: any = (response as any)?.content;
+    if (typeof content === 'string') {
+      answerText = content;
+    } else if (Array.isArray(content)) {
+      answerText = content
+        .map((part: any) => {
+          if (typeof part === 'string') return part;
+          if (part && typeof part === 'object' && 'text' in part) return String((part as any).text);
+          return '';
+        })
+        .join('');
+    } else {
+      answerText = JSON.stringify(content ?? '');
+    }
     
     console.log('✅ Answer generated successfully');
-    return answer;
+    return answerText;
 
   } catch (error) {
     console.error('❌ Error in askQuestion:', error);

@@ -1,10 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
-import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { embedAndStore, embedAndStorePDF } from "./src/pdfProcessor.js";
+import { embedAndStore } from "./src/pdfProcessor.js";
 import { askQuestion } from "./src/questionAnswerer.js";
+import { imageRouter } from "./routes/ImageHandle.route.js";
+import { pdfRouter } from "./routes/PdfHandling.route.js";
 
 dotenv.config();
 
@@ -16,29 +17,6 @@ const uploadDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
-
-// Multer Storage config
-const Storage = multer.diskStorage({
-  destination: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-    cb(null, uploadDir);
-  },
-  filename: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
-    const ext = path.extname(file.originalname);
-    const name = path.basename(file.originalname, ext);
-    cb(null, `${name}-${Date.now()}${ext}`);
-  },
-});
-
-// Multer file filter to accept only PDF files
-const fileFilter = (req: Express.Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  if (file.mimetype === "application/pdf") {
-    cb(null, true);
-  } else {
-    cb(new Error("Only PDF files are allowed"));
-  }
-};
-
-const upload = multer({ storage: Storage, fileFilter });
 
 // Routes
 
@@ -62,7 +40,6 @@ app.post("/add-paragraph", async (req, res) => {
 // ➤ Ask Question Route
 app.post("/ask", async (req, res) => {
   const { question } = req.body;
-  
   if (!question || typeof question !== 'string') {
     return res.status(400).json({ error: "Question is required and must be a string" });
   }
@@ -76,59 +53,8 @@ app.post("/ask", async (req, res) => {
   }
 });
 
-// ➤ Upload PDF Route
-app.post("/upload-pdf", upload.single("file"), async (req, res) => {
-  try {
-    console.log("📁 File upload request received");
-    console.log("📋 Request body:", req.body);
-    console.log("📄 Request file:", req.file);
-    
-    if (!req.file) {
-      console.log("❌ No file in request");
-      return res.status(400).json({ error: "No file uploaded" });
-    }
-    
-    console.log("✅ File uploaded successfully:", req.file.originalname);
-    console.log("📂 File saved to:", req.file.path);
-    console.log("📏 File size:", req.file.size, "bytes");
-    
-    const userId = req.body.userId ? parseInt(req.body.userId) : 21;
-    console.log("👤 User ID:", userId);
-    
-    const extractedText = await embedAndStorePDF(req.file.path, userId);
-    
-    // Clean up the uploaded file
-    console.log("🧹 Cleaning up uploaded file:", req.file.path);
-    fs.unlinkSync(req.file.path);
-    
-    if (extractedText) {
-      console.log("✅ PDF processing completed successfully");
-      res.status(200).json({ 
-        message: "PDF embedded and stored successfully", 
-        userId,
-        extractedLength: typeof extractedText === 'string' ? extractedText.length : 0 
-      });
-    } else {
-      console.log("⚠️ PDF processed but no text extracted");
-      res.status(200).json({ 
-        message: "PDF processed but no text was extracted", 
-        userId 
-      });
-    }
-  } catch (err: any) {
-    console.error("❌ Error in upload-pdf route:", err);
-    
-    // Clean up file if it exists
-    if (req.file && fs.existsSync(req.file.path)) {
-      console.log("🧹 Cleaning up file after error:", req.file.path);
-      fs.unlinkSync(req.file.path);
-    }
-    
-    res.status(500).json({ 
-      error: err.message || "Failed to process PDF" 
-    });
-  }
-});
+// ➤ File Upload Route (PDF)
+app.use("/file", pdfRouter);
 
 // ➤ Health Check Route
 app.get("/health", (req, res) => {
@@ -157,6 +83,8 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
     message: err.message 
   });
 });
+
+app.use("/image",imageRouter);
 
 // 404 handler
 app.use((req, res) => {
