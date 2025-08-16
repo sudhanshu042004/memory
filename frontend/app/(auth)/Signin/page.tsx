@@ -1,18 +1,79 @@
+import { Link, Redirect, useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
 import GoogleButton from '@/components/GoogleButton';
 import { useAuth } from "@/context/auth";
-import { Link } from 'expo-router';
-import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const API_BASE = process.env.EXPO_PUBLIC_API_BASE
 
 const SigninPage = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const {signIn}= useAuth();
+  const { signIn } = useAuth();
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-  const handleLogin = () => {
-    // Your login logic here
-    console.log("hello")
+  useEffect(() => {
+    const checkLogin = async () => {
+      const user = await AsyncStorage.getItem("session");
+      if (user) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+    checkLogin();
+  }, []);
+
+  if (isLoggedIn === null) return null;
+
+  if (isLoggedIn) {
+    return <Redirect href="/Home/page" />;
+  }
+
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Missing", "Email and password are required.");
+      return;
+    }
+    if (password.length < 8 || password.length > 16) {
+      Alert.alert("Password", "Password must be 8–16 characters.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
+      console.log(res.data)
+      if (res.data?.status === "statusOk") {
+        const jwt: string | undefined = res.data?.cookie;
+        //if (jwt) await AsyncStorage.setItem('session', jwt);
+        console.log(jwt)
+        if (jwt){
+          await AsyncStorage.setItem('session', jwt);
+         
+       }
+
+        Alert.alert("Success", res.data?.message ?? "Logged in.");
+        router.replace("/Home/page");
+      } else {
+        Alert.alert("Failed", res.data?.message ?? "Login failed.");
+      }
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ??
+        (err?.message?.includes('Network') ? 'Network error' : err?.message) ??
+        "something went wrong!!!";
+      Alert.alert("Error", msg);
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <KeyboardAvoidingView
@@ -41,20 +102,16 @@ const SigninPage = () => {
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity style={styles.signinButton} onPress={handleLogin}>
-          <Text style={styles.signinButtonText}>SIGN IN</Text>
+        <TouchableOpacity style={styles.signinButton} onPress={handleLogin} disabled={loading}>
+          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.signinButtonText}>SIGN IN</Text>}
         </TouchableOpacity>
-        <Text onPress={handleLogin} className='text-white' >
-          hello
-        </Text>
+
         <TouchableOpacity>
-          <GoogleButton googleText="Sign in  with Google" handleLogin={signIn}/>
+          <GoogleButton googleText="Sign in  with Google" handleLogin={signIn} />
         </TouchableOpacity>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Do not have an account? </Text>
-          
-         
           <Link href="/(auth)/Signup/page" replace asChild>
             <TouchableOpacity>
               <Text style={styles.signLink}>SignUp</Text>
@@ -66,65 +123,21 @@ const SigninPage = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#121212',
-  },
-  innerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 30,
-  },
-  header: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 40,
-    textAlign: 'center',
-  },
+  container: { flex: 1, backgroundColor: '#121212' },
+  innerContainer: { flex: 1, justifyContent: 'center', paddingHorizontal: 30 },
   input: {
-    height: 50,
-    backgroundColor: '#1e1e1e',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    fontSize: 16,
-    color: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#333333',
+    height: 50, backgroundColor: '#1e1e1e', borderRadius: 8, paddingHorizontal: 16,
+    marginBottom: 16, fontSize: 16, color: '#ffffff', borderWidth: 1, borderColor: '#333333',
   },
   signinButton: {
-    backgroundColor: '#4a80f0',
-    height: 50,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 24,
+    backgroundColor: '#4a80f0', height: 50, borderRadius: 8, justifyContent: 'center',
+    alignItems: 'center', marginTop: 10, marginBottom: 24,
   },
-  signinButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop:10
-  },
-  footerText: {
-    color: '#8e8e93',
-    fontSize: 14,
-  },
-  signLink: {
-    color: '#4a80f0',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
+  signinButtonText: { color: '#ffffff', fontSize: 16, fontWeight: 'bold' },
+  footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10 },
+  footerText: { color: '#8e8e93', fontSize: 14 },
+  signLink: { color: '#4a80f0', fontSize: 14, fontWeight: 'bold' },
 });
-
 
 export default SigninPage;
