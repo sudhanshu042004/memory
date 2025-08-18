@@ -20,11 +20,11 @@ ExtractWeb.post('/',async(req:Request,res:Response)=>{
     }
     try {
         
-        const pTagSelector = 'p';
+        const contentSelector = 'p, code, pre, h1, h2, h3, h4, h5, h6, li, blockquote, div.content, article';
         const cheerioLoader = new CheerioWebBaseLoader(
             url,
             {
-                selector : pTagSelector,
+                selector : contentSelector,
             }
         )
         const docs = await cheerioLoader.load();

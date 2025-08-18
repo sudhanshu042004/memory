@@ -3,8 +3,9 @@ import dotenv from "dotenv";
 import path from "path";
 import fs from "fs";
 import { logger } from "./utils/LogConfig.js";
-import { extractWebLoader } from "./utils/webSearch.js";
 import { ExtractWeb } from "./routes/ExtractWeb.route.js";
+import { AskLLM } from "./routes/AskLLm.route.js";
+import { verifyUser } from "./middleware/verifyToken.js";
 
 dotenv.config();
 
@@ -21,8 +22,9 @@ app.use((req, _res, next) => {
   next();
 });
 
-app.get('/api/v1/webExtract',ExtractWeb);
-app.get('/api/v1/ask')
+app.use(verifyUser);
+app.use('/api/v1/webExtract',ExtractWeb);
+app.use('/api/v1/ask',AskLLM);
 
 
 
