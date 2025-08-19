@@ -15,7 +15,6 @@ AskLLM.post('/',async (req:Request,res:Response)=>{
         })
         return;
     }
-    console.log(data);
     try {
         
         const result = await graph.invoke({question : data});

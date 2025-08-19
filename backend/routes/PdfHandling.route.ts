@@ -1,66 +1,74 @@
-import express from "express";
-import multer from "multer";
+import { Router, type Request, type Response } from "express";
 import path from "path";
+import multer from "multer";
+import { fileValidation } from "../utils/ZodTypes";
+import { logger } from "../utils/LogConfig";
 import fs from "fs";
-import { embedAndStorePDF } from "../utils/pdfProcessor";
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { splitters, vectoreStore } from "../utils/vectorStoreManager";
 
-export const pdfRouter = express.Router();
+export const pdfRouter = Router();
 
-const uploadDir = path.join(process.cwd(), "uploads");
-if (!fs.existsSync(uploadDir)) {
-	fs.mkdirSync(uploadDir);
-}
-
-const storage = multer.diskStorage({
-	destination: (_req: Express.Request, _file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-		cb(null, uploadDir);
-	},
-	filename: (_req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
-		const ext = path.extname(file.originalname);
-		const name = path.basename(file.originalname, ext);
-		cb(null, `${name}-${Date.now()}${ext}`);
-	},
+const storge = multer.diskStorage({
+    destination: (_req, _file, cb) => {
+        cb(null, path.join(__dirname, "../uploads"));
+    },
+    filename: (_req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, file.fieldname + '-' + uniqueSuffix);
+    }
 });
 
-const fileFilter = (_req: Express.Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-	if (file.mimetype === "application/pdf") {
-		cb(null, true);
-	} else {
-		cb(new Error("Only PDF files are allowed"));
-	}
-};
+const upload = multer({ storage: storge });
 
-const upload = multer({ storage, fileFilter });
+pdfRouter.post('/', upload.single('pdfFile'), async (req: Request, res: Response) => {
+    if (!req.file) {
+        res.json({
+            message: "No file uploaded",
+            "status": "error"
+        })
+        return;
+    }
 
-pdfRouter.post("/", upload.single("file"), async (req: express.Request, res: express.Response) => {
-	try {
-		if (!req.file) {
-			return res.status(400).json({ error: "No file uploaded" });
-		}
+    const { data, error } = fileValidation.safeParse(req.file);
+    if (error || !data) {
+        logger.error(error);
+        res.json({
+            message: "invalid file type only pdf supported",
+            "status": "error"
+        })
+        return;
+    }
 
-		const userId = req.body.userId ? parseInt(req.body.userId) : 21;
-		const extractedText = await embedAndStorePDF(req.file.path, userId);
+    try {
+        const loader = new PDFLoader(path.join(__dirname, "../uploads", req.file.filename), { splitPages: false, parsedItemSeparator: "", });
+        const docs = await loader.load();
+        const splitsDocs = await splitters.splitDocuments(docs);
 
-		if (req.file && fs.existsSync(req.file.path)) {
-			fs.unlinkSync(req.file.path);
-		}
+        const docWithMetaData = splitsDocs.map((doc, index) => ({
+            ...doc,
+            metadata: {
+                ...doc.metadata,
+                userId: req.userId,
+                email: req.email,
+                extractAt: new Date().toISOString(),
+                chunkIndex: index,
+            }
+        }))
 
-		if (extractedText) {
-			return res.status(200).json({
-				message: "PDF embedded and stored successfully",
-				userId,
-				extractedLength: typeof extractedText === "string" ? extractedText.length : 0,
-			});
-		}
+        await vectoreStore.addDocuments(docWithMetaData);
 
-		return res.status(200).json({
-			message: "PDF processed but no text was extracted",
-			userId,
-		});
-	} catch (err: any) {
-		if (req.file && fs.existsSync(req.file.path)) {
-			fs.unlinkSync(req.file.path);
-		}
-		return res.status(500).json({ error: err.message || "Failed to process PDF" });
-	}
-});
+        fs.unlink(path.join(__dirname, "../uploads", req.file.filename), () => { });
+        res.json({
+            "message": "file recieved",
+            "status": "statusOK",
+        })
+    } catch (error) {
+        logger.fatal(error);
+        res.json({
+            "message": "something went off",
+            "status": "error"
+        })
+        return;
+    }
+})
