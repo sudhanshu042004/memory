@@ -11,3 +11,5 @@ export const fileValidation = z.object({
     }),
     originalname: z.string()
 });
+
+export const textValidDation = z.string().min(20);
