@@ -1,4 +1,5 @@
-import { embedAndStorePDF, askQuestion } from './index';
+import { embedAndStorePDF } from './utils/pdfProcessor.js';
+import { askQuestion } from './utils/questionAnswerer.js';
 
 async function main() {
   try {
