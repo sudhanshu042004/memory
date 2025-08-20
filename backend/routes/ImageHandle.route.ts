@@ -2,6 +2,8 @@ import expres from "express"
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { llm } from "../utils/vectorStoreManager";
+
 
 export const imageRouter = expres.Router();
 
@@ -32,7 +34,9 @@ const fileFilter = (_req:Express.Request,file:Express.Multer.File,cb:multer.File
 const upload = multer({storage:storage,fileFilter});
 
 imageRouter.post('/postImage', upload.single("image"),(req:expres.Request,res:expres.Response)=>{
+
+    llm.invoke
     res.json({
-        "message" : "request comming to our server"
+        "message" : "image successfully saved to server"
     })
 })
