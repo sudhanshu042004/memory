@@ -14,6 +14,12 @@ export const llm = new ChatGoogleGenerativeAI({
   temperature: 0.5,
 })
 
+export const imageLLM = new ChatGoogleGenerativeAI({
+  model: "gemini-2.5-flash-lite",
+  temperature: 0.5,
+  maxOutputTokens: 150,
+})
+
 export const embeddings = new GoogleGenerativeAIEmbeddings({
   model: "text-embedding-004",
   taskType: TaskType.RETRIEVAL_DOCUMENT,
