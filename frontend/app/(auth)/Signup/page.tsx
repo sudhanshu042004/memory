@@ -1,9 +1,9 @@
-import { Link, Redirect, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Alert, ActivityIndicator } from 'react-native';
 import GoogleButton from '@/components/GoogleButton';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { useRouter } from 'expo-router';
+import { useRef, useState } from 'react';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const API_BASE = process.env.EXPO_PUBLIC_API_BASE;
 
@@ -16,18 +16,18 @@ const SignupPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const checkLogin = async () => {
-      const user = await AsyncStorage.getItem("session");
-      setIsLoggedIn(!!user);
-    };
-    checkLogin();
-  }, []);
+  // useEffect(() => {
+  //   const checkLogin = async () => {
+  //     const user = await AsyncStorage.getItem("session");
+  //     setIsLoggedIn(!!user);
+  //   };
+  //   checkLogin();
+  // }, []);
 
-  if (isLoggedIn === null) return null;
-  if (isLoggedIn){ 
-    return <Redirect href="/Home/page" />
-  }
+  // if (isLoggedIn === null) return null;
+  // if (isLoggedIn) {
+  //   return <Redirect href="/Home/page" />
+  // }
 
   const handleSignup = async () => {
     if (!email || !password || !name) {
@@ -42,11 +42,11 @@ const SignupPage = () => {
     try {
       setLoading(true);
       const res = await axios.post(`${API_BASE}/auth/signup`, { email, password, name });
-    
+
       if (res.data?.status === "success") {
         const jwt: string | undefined = res.data?.cookie;
-        if (jwt){
-           await AsyncStorage.setItem('session', jwt);
+        if (jwt) {
+          await AsyncStorage.setItem('session', jwt);
         }
 
         Alert.alert("Success", res.data?.message ?? "Account created.");
@@ -65,6 +65,8 @@ const SignupPage = () => {
       setLoading(false);
     }
   };
+  const emailRef = useRef<TextInput>(null)
+  const passwordRef = useRef<TextInput>(null)
 
   return (
     <KeyboardAvoidingView
@@ -74,23 +76,40 @@ const SignupPage = () => {
       <View style={styles.innerContainer}>
         <Text style={styles.header}>Create Account</Text>
 
-        <TextInput style={styles.input} placeholder="Full Name" placeholderTextColor="#8e8e93" selectionColor="#4a80f0" value={name} onChangeText={setName} />
-        <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#8e8e93" keyboardType="email-address" autoCapitalize="none" selectionColor="#4a80f0" value={email} onChangeText={setEmail} />
-        <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#8e8e93" secureTextEntry selectionColor="#4a80f0" value={password} onChangeText={setPassword} />
+        <TextInput style={styles.input} placeholder="Full Name" placeholderTextColor="#8e8e93"
+          selectionColor="#4a80f0" value={name} onChangeText={setName}
+          onSubmitEditing={() => {
+            emailRef.current?.focus()
+          }}
+          submitBehavior='submit'
+          returnKeyType='next' />
+        <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#8e8e93"
+          keyboardType="email-address" autoCapitalize="none" selectionColor="#4a80f0" value={email}
+          onChangeText={setEmail}
+          ref={emailRef}
+          onSubmitEditing={() => {
+            passwordRef.current?.focus()
+          }}
+          submitBehavior='submit'
+          returnKeyType='next' />
+        <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#8e8e93"
+          secureTextEntry selectionColor="#4a80f0" value={password}
+          onChangeText={setPassword}
+          ref={passwordRef} submitBehavior='submit' returnKeyType='go' />
 
         <TouchableOpacity style={styles.signupButton} onPress={handleSignup} disabled={loading}>
           {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.signupButtonText}>SIGN UP</Text>}
         </TouchableOpacity>
 
         <TouchableOpacity>
-          <GoogleButton googleText="Signup with Google" />
+          <GoogleButton googleText="Signup with Google" handleLogin={() => console.log("hello")} />
         </TouchableOpacity>
 
         <View className="mt-2" style={styles.footer}>
           <Text style={styles.footerText}>Already have an account? </Text>
-          <Link href="/(auth)/Signin/page" replace asChild>
-            <TouchableOpacity><Text style={styles.loginLink}>Login</Text></TouchableOpacity>
-          </Link>
+
+          <TouchableOpacity onPress={()=>router.dismissAll()} ><Text style={styles.loginLink}>Login</Text></TouchableOpacity>
+
         </View>
       </View>
     </KeyboardAvoidingView>

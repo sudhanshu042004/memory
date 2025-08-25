@@ -1,10 +1,10 @@
-import { Link, Redirect, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
 import GoogleButton from '@/components/GoogleButton';
 import { useAuth } from "@/context/auth";
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { useRouter } from 'expo-router';
+import React, { useRef, useState } from 'react';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const API_BASE = process.env.EXPO_PUBLIC_API_BASE
 
@@ -16,23 +16,23 @@ const SigninPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    const checkLogin = async () => {
-      const user = await AsyncStorage.getItem("session");
-      if (user) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
-    };
-    checkLogin();
-  }, []);
+  // useEffect(() => {
+  //   const checkLogin = async () => {
+  //     const user = await AsyncStorage.getItem("session");
+  //     if (user) {
+  //       setIsLoggedIn(true);
+  //     } else {
+  //       setIsLoggedIn(false);
+  //     }
+  //   };
+  //   checkLogin();
+  // }, []);
 
-  if (isLoggedIn === null) return null;
+  // if (isLoggedIn === null) return null;
 
-  if (isLoggedIn) {
-    return <Redirect href="/Home/page" />;
-  }
+  // if (isLoggedIn) {
+  //   return <Redirect href="/Home/page" />;
+  // }
 
 
   const handleLogin = async () => {
@@ -73,7 +73,7 @@ const SigninPage = () => {
       setLoading(false);
     }
   };
-
+  const passwordRef = useRef<TextInput>(null)
 
   return (
     <KeyboardAvoidingView
@@ -90,6 +90,11 @@ const SigninPage = () => {
           selectionColor="#4a80f0"
           value={email}
           onChangeText={setEmail}
+          onSubmitEditing={()=>{
+            passwordRef.current?.focus()
+          }}
+          submitBehavior="submit"
+          returnKeyType='next'
         />
 
         <TextInput
@@ -100,6 +105,8 @@ const SigninPage = () => {
           selectionColor="#4a80f0"
           value={password}
           onChangeText={setPassword}
+          ref={passwordRef}
+          returnKeyType='go'
         />
 
         <TouchableOpacity style={styles.signinButton} onPress={handleLogin} disabled={loading}>
@@ -112,11 +119,11 @@ const SigninPage = () => {
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Do not have an account? </Text>
-          <Link href="/(auth)/Signup/page" replace asChild>
-            <TouchableOpacity>
+          
+            <TouchableOpacity onPress={()=>router.push("/(auth)/Signup/page")} >
               <Text style={styles.signLink}>SignUp</Text>
             </TouchableOpacity>
-          </Link>
+         
         </View>
       </View>
     </KeyboardAvoidingView>
