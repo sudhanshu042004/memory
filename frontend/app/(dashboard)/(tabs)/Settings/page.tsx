@@ -1,6 +1,7 @@
 import AccountComponent from "@/components/Settings/AccountComponent";
 import AiPersonalisationComponent from "@/components/Settings/AiPersonalisationComponent";
 import PrivacyComponent from "@/components/Settings/PrivacyComponent";
+import SecurityComponent from "@/components/Settings/SecurityComponent";
 import { UserContext } from "@/context/UserContext";
 import { useContext } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -16,19 +17,13 @@ const SettingScreen = () => {
                 <PrivacyComponent />
                 {/* //ai and personalisation */}
                 <AiPersonalisationComponent />
-                {/* //security */}
-                <View>
-                    <Text style={styles.textHeading} >Security</Text>
-                    <View style={styles.boxContainer} >
-
-                    </View>
-                </View>
+               <SecurityComponent/>
 
                 {/* //logout (different) */}
                 <View>
                     {/* <Text style={styles.textHeading} >Privacy</Text> */}
                     <View style={styles.boxContainer} >
-
+                        <Text style={styles.textHeading} >logout</Text>
                     </View>
                 </View>
             </SafeAreaView>
