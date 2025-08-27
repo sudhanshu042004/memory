@@ -59,7 +59,7 @@ const SigninPage = () => {
        }
 
         Alert.alert("Success", res.data?.message ?? "Logged in.");
-        router.replace("/Home/page");
+        router.replace("/(dashboard)/(tabs)/Home/page");
       } else {
         Alert.alert("Failed", res.data?.message ?? "Login failed.");
       }

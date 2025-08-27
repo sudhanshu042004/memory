@@ -31,8 +31,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
       });
       if (!res.ok) throw new Error("Unauthorized");
       
-      const resData: User = await res.json();
-      setUser(resData);
+      const resData = await res.json();
+      setUser(resData.data);
     } catch (err) {
       console.log("Error fetching user:", err);
       setUser(null);

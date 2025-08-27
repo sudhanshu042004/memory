@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Redirect } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Redirect } from "expo-router";
+import React, { useEffect, useState } from "react";
 
 export default function Index() {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +22,7 @@ export default function Index() {
   return (
     <>
       {isLoggedIn ? (
-        <Redirect href="/Home/page" />
+        <Redirect href="/(dashboard)/(tabs)/Home/page" />
       ) : (
         <Redirect href="/(auth)/Signup/page" />
       )}

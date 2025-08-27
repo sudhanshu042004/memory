@@ -15,6 +15,15 @@ export interface Memory {
   };
 }
 
+export type User = {
+  id : number,
+  name : string,
+  email : string,
+  avatar : null | string,
+  createdAt : string,
+  updatedAt : string
+}
+
 export interface BaseComponentProps {
   onSave: (memory: Omit<Memory, 'id' | 'createdAt'>) => void;
   onCancel: () => void;

@@ -76,7 +76,7 @@ export default function TabLayout() {
               title: "Settings",
               tabBarIcon: ({ color }) => (
                 <Feather name="settings" color={color} size={24} />
-              )
+              ),
             }}
           />
         </Tabs>

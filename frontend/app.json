@@ -20,15 +20,17 @@
       "package": "com.sudhanshu15.aimemory",
       "intentFilters": [
         {
-           "action": "VIEW",
+          "action": "VIEW",
           "data": [
             {
               "scheme": "com.sudhanshu15.aimemory"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
-        
       ]
     },
     "web": {
@@ -48,10 +50,17 @@
         }
       ],
       "expo-web-browser",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2655ca41-7678-4623-9489-4881245f27e8"
+      }
     }
   }
 }
