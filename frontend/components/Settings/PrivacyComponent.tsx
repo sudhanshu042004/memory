@@ -11,8 +11,7 @@ export default function PrivacyComponent() {
     return (
         <View>
             <Text style={styles.textHeading} >Privacy</Text>
-            <View style={styles.boxContainer} >
-                
+            <View style={styles.boxContainer}>
                     <View style={styles.boxContainerRow} >
                         <View style={styles.boxContainerTextBox} >
                             <Text style={styles.boxMainText} >Delete Account & Data</Text>

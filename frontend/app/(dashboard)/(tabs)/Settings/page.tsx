@@ -3,31 +3,46 @@ import AiPersonalisationComponent from "@/components/Settings/AiPersonalisationC
 import PrivacyComponent from "@/components/Settings/PrivacyComponent";
 import SecurityComponent from "@/components/Settings/SecurityComponent";
 import { UserContext } from "@/context/UserContext";
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 import { useContext } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 
 
 
 const SettingScreen = () => {
     const userContexr = useContext(UserContext);
+    const router = useRouter();
+    async function handleLogOut() {
+        await AsyncStorage.multiRemove(['session']);
+        router.replace("/(auth)/Signin/page");
+    }
     return (
-        <ScrollView>
-            <SafeAreaView style={styles.container} >
+        <SafeAreaView style={styles.container} >
+            <ScrollView>
                 <AccountComponent UserData={userContexr?.user} />
-                <PrivacyComponent />
-                {/* //ai and personalisation */}
+                <PrivacyComponent /> 
                 <AiPersonalisationComponent />
-               <SecurityComponent/>
+                <SecurityComponent />
 
-                {/* //logout (different) */}
-                <View>
-                    {/* <Text style={styles.textHeading} >Privacy</Text> */}
+                {/* logOut */}
+                <Pressable onPress={()=>handleLogOut()} >
                     <View style={styles.boxContainer} >
-                        <Text style={styles.textHeading} >logout</Text>
+                        <View style={styles.boxContainerRow}>
+                            <View style={styles.boxContainerTextBox}>
+                                <Text style={styles.boxMainText} >logout</Text>
+                                <Text style={styles.boxSecondaryText} >Securely sign out from your account</Text>
+                            </View>
+                            <View style={styles.deleteTextBox}>
+                                <Ionicons name="log-out-outline" color={"#F4817E"} size={22} />
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </SafeAreaView>
-        </ScrollView>
+                </Pressable>
+                <View style={{ marginTop: 200 }} ></View>
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 export default SettingScreen;
@@ -52,8 +67,12 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: "#25272E",
         borderWidth: 1,
+
+    },
+    boxContainerRow: {
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        alignItems: "center"
     },
     boxContainerTextBox: {
         gap: 4
@@ -64,17 +83,25 @@ const styles = StyleSheet.create({
     },
     boxSecondaryText: {
         color: '#9A9B9E',
-        fontFamily: "Inter_400Regular"
+        fontFamily: "Inter_400Regular",
+        textAlign: 'left',
+        fontSize: 12,
+        flexShrink: 1,
+        flexWrap: "wrap"
     },
     ImageContainer: {
         width: 60,
         height: 60,
         borderRadius: 30,
         overflow: 'hidden',
-        // flexDirection : "row"
     },
     image: {
         width: '100%',
         height: '100%',
+    },
+    deleteTextBox: {
+        justifyContent: "center",
+        alignItems: "center",
+        marginRight: 10
     },
 })

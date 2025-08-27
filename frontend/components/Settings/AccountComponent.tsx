@@ -1,13 +1,21 @@
 import { User } from "@/types";
+import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, useFonts } from "@expo-google-fonts/inter";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+
 
 const blurhash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
 const defaultProfilePic = "https://picsum.photos/seed/696/3000/2000"
 
 export default function AccountComponent({ UserData }: { UserData: User | null | undefined }) {
+    const [fontsLoaded] = useFonts({
+        Inter_600SemiBold,
+        Inter_500Medium,
+        Inter_400Regular,
+        Inter_700Bold
+    })
     const router = useRouter();
     const date = new Date(UserData?.createdAt as string);
     const formattedDate = date.toLocaleDateString('en-GB', {
@@ -27,7 +35,7 @@ export default function AccountComponent({ UserData }: { UserData: User | null |
                         <Text style={styles.boxSecondaryText} >
                             {UserData?.email}
                         </Text>
-                        //add somthing here cuz looking empty
+                        
                         <Text style={styles.boxSecondaryText}>{formattedDate}</Text>
                     </View>
                     <View style={styles.ImageContainer} >
@@ -69,7 +77,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     boxContainerTextBox: {
-        gap: 4
+        gap:4
     },
     boxMainText: {
         color: "white",
@@ -77,24 +85,17 @@ const styles = StyleSheet.create({
     },
     boxSecondaryText: {
         color: '#9A9B9E',
-        fontFamily: "Inter_400Regular"
+        fontFamily: "Inter_400Regular",
+        fontSize:12
     },
     ImageContainer: {
         width: 60,
         height: 60,
         borderRadius: 30,
         overflow: 'hidden',
-        // flexDirection : "row"
     },
     image: {
         width: '100%',
         height: '100%',
     },
 })
-
-
-
-// 5
-// 2 4 1 3 5
-// 1 3 5 2 4
-// 4 2 5 3 1
