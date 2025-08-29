@@ -6,7 +6,11 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <StatusBar style='inverted' />
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: 'black' },
+        headerStyle: { backgroundColor: 'black' }
+      }} />
     </AuthProvider>
   );
 }

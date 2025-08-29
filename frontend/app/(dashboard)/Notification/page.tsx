@@ -1,26 +1,64 @@
+import { Inter_500Medium } from "@expo-google-fonts/inter"
+import { Ionicons } from "@expo/vector-icons"
+import { useFonts } from "expo-font"
 import { Stack } from "expo-router"
-import { Text, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 
-export default function NotificationScreen(){
+export default function NotificationScreen() {
+    const [fontsLoaded] = useFonts({
+        Inter_500Medium,
+    })
     return (
-        <>
-         <Stack.Screen options={{
-                    headerShown: true, headerStyle: {
-                        backgroundColor: "black",
-                    },
-                    headerTitleStyle: {
-                        color: "white",
-                        fontFamily: "Inter_500Medium",
-                        fontSize: 19,
-                        fontWeight: "500",
-                    },
-                    headerTintColor : "white",
-                    title: "Profile",
-                    animation: "slide_from_right"
-                }} />
-        <View>
-            <Text>hello</Text>
+        <View style={styles.container} >
+            <Stack.Screen options={{
+                headerShown: true,
+                animation: "slide_from_right",
+                headerStyle: {
+                    backgroundColor: "black",
+                },
+                headerTitleStyle: {
+                    color: "white",
+                    fontFamily: "Inter_500Medium",
+                    fontSize: 19,
+                    fontWeight: "500",
+                },
+                headerTintColor: "white",
+                title: "Notification",
+            }} />
+            <View style={styles.emptyBox} >
+                <View style={styles.emptyContent}>
+                    <Ionicons  name="notifications-outline" color="#9A9B9E" size={30} />
+                    <Text style={styles.emptyText}>No notifications</Text>
+                </View>
+            </View>
         </View>
-        </>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "black"
+    },
+    text: {
+        color: "white"
+    },
+    emptyBox: {
+        backgroundColor: "#101012",
+        marginHorizontal: 20,
+        marginVertical: 40,
+        borderRadius: 15,
+        height: 80,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    emptyContent: {
+        alignItems: "center",
+        gap: 8
+    },
+    emptyText: {
+        color: "#9A9B9E",
+        fontFamily: "Inter_500Medium",
+        fontSize: 16
+    }
+})
