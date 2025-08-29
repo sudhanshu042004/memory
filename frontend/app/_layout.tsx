@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <StatusBar style='inverted' />
+      <StatusBar style='light' />
       <Stack screenOptions={{ headerShown: false }} />
     </AuthProvider>
   );
