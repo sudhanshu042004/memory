@@ -44,13 +44,14 @@ const styles = StyleSheet.create({
         color: "white"
     },
     emptyBox: {
-        backgroundColor: "#101012",
+        // backgroundColor: "#101012",
         marginHorizontal: 20,
         marginVertical: 40,
         borderRadius: 15,
         height: 80,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        flex : 1
     },
     emptyContent: {
         alignItems: "center",
