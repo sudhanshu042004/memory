@@ -136,7 +136,6 @@ const AddUrlScreen = () => {
       />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* URL Input Section */}
         <Text style={styles.textHeading}>Enter URL</Text>
         <View style={styles.boxContainer}>
           <View style={styles.inputContainer}>
@@ -156,7 +155,7 @@ const AddUrlScreen = () => {
           {url.length > 0 && (
             <>
               <View style={styles.hr} />
-              <Pressable onPress={clearInput}>
+              <Pressable onPress={()=>console.log("hello")}>
                 <View style={styles.boxContainerRow}>
                   <View style={styles.boxContainerTextBox}>
                     <Text style={styles.boxMainText}>Clear URL</Text>
@@ -331,6 +330,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   boxContainer: {
+    flex:1,
     backgroundColor: "#17181B",
     marginHorizontal: 20,
     marginVertical: 20,
