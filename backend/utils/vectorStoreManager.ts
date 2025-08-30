@@ -15,7 +15,7 @@ export const llm = new ChatGoogleGenerativeAI({
 })
 
 export const imageLLM = new ChatGoogleGenerativeAI({
-  model: "gemini-2.5-flash-lite",
+  model: "gemini-2.0-flash",
   temperature: 0.5,
   maxOutputTokens: 150,
 })
