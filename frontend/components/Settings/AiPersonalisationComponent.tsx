@@ -2,7 +2,7 @@ import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, us
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
-
+import { ImageStyle } from "react-native";
 
 
 export default function AiPersonalisationComponent() {
@@ -41,8 +41,8 @@ export default function AiPersonalisationComponent() {
                         dropDownContainerStyle={styles.dropdownContainer}
                         textStyle={styles.dropdownText}
                         listMode="SCROLLVIEW"
-                        // arrowIconStyle={{tintColor : "white"}}
-                        // tickIconStyle={{tintColor : "white"}}
+                        arrowIconStyle={{tintColor : "white"} as ImageStyle}
+                        tickIconStyle={{tintColor : "white"} as ImageStyle}
                     />
                 </View>
 
