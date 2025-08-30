@@ -11,10 +11,10 @@ import Animated, {
 } from "react-native-reanimated";
 
 const icons = [
-  { name: "link-outline", route: "/link" },
-  { name: "create-outline", route: "/create" },
-  { name: "document-outline", route: "/document" },
-  { name: "image-outline", route: "/image" },
+  { name: "link-outline", route: "/(dashboard)/AddLink/page" },
+  { name: "create-outline", route: "/(dashboard)/AddText/page" },
+  { name: "document-outline", route: "/(dashboard)/AddPdf/page" },
+  { name: "image-outline", route: "/(dashboard)/AddImages/page" },
 ] as const;
 
 const radius = 100;
@@ -50,7 +50,7 @@ export default function HomeScreen() {
     };
   });
 
-  const handleIconPress = (route: string) => {
+  const handleIconPress = (route : any) => {
     // Close menu and navigate
     setExpanded(false);
     progress.value = withTiming(0, {
@@ -61,6 +61,7 @@ export default function HomeScreen() {
       duration: 300,
       easing: Easing.out(Easing.cubic),
     });
+    router.push(route)
   };
 
   return (
