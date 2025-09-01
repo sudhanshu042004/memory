@@ -13,13 +13,10 @@ const AskPage = () => {
       Inter_700Bold,
       Inter_500Medium,
     });
+    
   const handleSend = () => {
     if (!input.trim()) return
     
-
-    // add logic
-
-
     setConversation([...conversation, { role: "user", text: input }])
     setInput("") 
   }
@@ -37,6 +34,14 @@ const AskPage = () => {
         <Text style={styles.emptyText}>
           Ask any question about your stored memories and get intelligent responses
         </Text>
+
+        {/* --- Quick Suggestions --- */}
+        <View style={styles.suggestionBox}>
+          <Text style={styles.suggestionTitle}>💡 Try asking:</Text>
+          <Text style={styles.suggestionItem}>• What did I do last weekend?</Text>
+          <Text style={styles.suggestionItem}>• Show me my saved highlights</Text>
+          <Text style={styles.suggestionItem}>• Remind me about my goals</Text>
+        </View>
       </LinearGradient>
     </View>
   )
@@ -46,6 +51,9 @@ const AskPage = () => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>AI Memory Assistant</Text>
         <Text style={styles.headerSubtitle}>Ask anything about your memories</Text>
+
+        {/* --- Motivation Line --- */}
+        <Text style={styles.headerMotivation}>✨ Your AI remembers so you don’t have to!</Text>
       </View>
 
       <ScrollView 
@@ -130,6 +138,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily:"Inter_500Medium",
   },
+  headerMotivation: {
+    color: '#6D78E7',
+    fontSize: 14,
+    fontFamily:"Inter_400Regular",
+    marginTop: 6,
+  },
   contentContainer: {
     flex: 1,
   },
@@ -171,17 +185,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     lineHeight: 24,
-    marginBottom: 32,
+    marginBottom: 20,
     fontFamily:"Inter_500Medium",
   },
-  suggestionContainer: {
-    width: '100%',
-    gap: 12,
+  suggestionBox: {
+    marginTop: 10,
+    alignItems: 'flex-start',
+  },
+  suggestionTitle: {
+    color: '#6D78E7',
+    fontSize: 16,
+    fontFamily: "Inter_700Bold",
+    marginBottom: 8,
+  },
+  suggestionItem: {
+    color: '#ccc',
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    marginBottom: 4,
   },
   inputSection: {
     padding: 20,
     marginBottom: 80,
-
   },
   inputContainer: {
     borderRadius: 24,
