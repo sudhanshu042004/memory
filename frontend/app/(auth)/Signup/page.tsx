@@ -292,7 +292,10 @@ const styles = StyleSheet.create({
   dividerText: {
     color: "#8e8e93",
     marginHorizontal: 10,
-    fontFamily: "Inter_400Regular"
+    fontFamily: "Inter_400Regular",
+    fontSize: 14,
+    minWidth: 30, 
+    textAlign: "center",
   },
 
   footer: {

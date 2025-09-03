@@ -17,7 +17,8 @@ export default function AuthLayout() {
                         color: "white"
                     }
                 }} />
-                <Stack.Screen name="Signup/page" options={{ title: "signup", animation: "slide_from_left",
+                <Stack.Screen name="Signup/page" options={{
+                    title: "signup", animation: "slide_from_left",
                     headerShown: false,
                     headerStyle: {
                         backgroundColor: "black",
@@ -26,7 +27,18 @@ export default function AuthLayout() {
                     headerTitleStyle: {
                         color: "white"
                     }
-                 }} />
+                }} />
+
+                <Stack.Screen
+                    name="ForgotPassword/page"
+                    options={{
+                        title: "Forgot Password",
+                        animation: "slide_from_right",
+                        headerStyle: { backgroundColor: "#121212" },
+                        headerTitleStyle: { color: "white" },
+                        headerTintColor: "white", 
+                    }}
+                />
             </Stack>
         </View>
     )
