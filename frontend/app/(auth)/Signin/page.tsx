@@ -50,6 +50,7 @@ const SigninPage = () => {
       const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
       if (res.data?.status === "statusOk") {
         const jwt: string | undefined = res.data?.cookie;
+        console.log(jwt)
         if (jwt) await AsyncStorage.setItem('session', jwt);
         Alert.alert("Success", res.data?.message ?? "Logged in.");
         router.replace("/(dashboard)/(tabs)/Home/page");
@@ -115,7 +116,7 @@ const SigninPage = () => {
           </TouchableOpacity>
 
           {/* Forgot Password */}
-          <TouchableOpacity onPress={() => Alert.alert("Forgot Password", "Redirect to reset password flow")}>
+          <TouchableOpacity onPress={() => router.push("/(auth)/ForgotPassword/page")}>
             <Text style={styles.forgotText}>Forgot Password?</Text>
           </TouchableOpacity>
 
@@ -215,6 +216,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "white",
     fontFamily: "Inter_500Medium",
+    textAlign: "center", 
+    width: "100%",
   },
   forgotText: {
     color: "#6D78E7",
@@ -236,17 +239,22 @@ const styles = StyleSheet.create({
     color: "#8e8e93",
     marginHorizontal: 10,
     fontFamily: "Inter_400Regular",
+    fontSize: 14,
+    minWidth: 30, 
+    textAlign: "center",
   },
   footer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 20,
+    flexWrap: "wrap", 
   },
   footerText: {
     fontSize: 14,
     color: "#8e8e93",
     fontFamily: "Inter_500Medium",
+    flexWrap: "wrap", 
   },
   signLink: {
     fontSize: 14,
@@ -254,6 +262,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontFamily: "Inter_500Medium",
   },
+  
 });
 
 export default SigninPage;
