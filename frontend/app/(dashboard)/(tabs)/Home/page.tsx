@@ -1,16 +1,15 @@
-import React from "react";
-import { SafeAreaView, StyleSheet, ScrollView, View } from "react-native";
-import { Stack, useRouter } from "expo-router";
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
+import { Stack, useRouter } from "expo-router";
+import React from "react";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 
 import {
-  HeaderButtons,
   GreetingSection,
-  QuickActions,
-  StatsSection,
+  HeaderButtons,
   MemoryCategories,
+  QuickActions,
   RecentActivity,
-  FloatingAddMenu
+  StatsSection
 } from '@/components/index';
 
 export default function HomeScreen() {
@@ -37,7 +36,7 @@ export default function HomeScreen() {
         }}
       />
 
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
         bounces={true}
@@ -47,7 +46,7 @@ export default function HomeScreen() {
         <StatsSection />
         <MemoryCategories />
         <RecentActivity />
-        
+
         <View style={styles.bottomSpacer} />
       </ScrollView>
 

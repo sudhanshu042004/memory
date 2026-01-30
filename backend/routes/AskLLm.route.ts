@@ -1,33 +1,55 @@
 import { Router, type Request, type Response } from "express";
 import { QueryValidation } from "../utils/ZodTypes";
-import { graph } from "../utils/vectorStoreManager";
 import { logger } from "../utils/LogConfig";
+import { ragAgent } from "../utils/vectorStoreManager";
+import { AIMessage, HumanMessage, type BaseMessage } from "langchain";
 
 export const AskLLM = Router();
 
-AskLLM.post('/',async (req:Request,res:Response)=>{
-    const {query} = req.body;
-    const {data,error}  = QueryValidation.safeParse(query);
-    if(!data || error){
-        res.json({
-            message : "invalid query",
-            status : "error"
-        })
-        return;
+const chatSession = new Map<string,BaseMessage[]>();
+
+AskLLM.post("/", async (req: Request, res: Response) => {
+  const { query,sessionId } = req.body;
+  const userId = req.userId;
+  const { data, error } = QueryValidation.safeParse(query);
+  if (!data || error) {
+    res.json({
+      message: "invalid query",
+      status: "error",
+    });
+    return;
+  }
+  try {
+    
+    const session = sessionId || "default";
+    const chatHistory = chatSession.get(session) || [];
+
+    const result = await ragAgent.invoke({
+      question : data,
+      chatHistory,
+      userId : userId || undefined,
+    })
+
+     // Update chat history
+    chatHistory.push(new HumanMessage(data));
+    chatHistory.push(new AIMessage(result.answer));
+    
+    // Keep only last 10 messages to avoid context overflow
+    if (chatHistory.length > 10) {
+      chatHistory.splice(0, chatHistory.length - 10);
     }
-    try {
-        
-        const result = await graph.invoke({question : data});
-        res.json({
-            status : "statusOK",
-            message : "data successfully retireved",
-            result : result.answer
-        });
-    } catch (error) {
-        logger.fatal(error),
-        res.status(500).json({
-            message : "something went off",
-            status : "error"
-        })
-    }
-})
+
+    chatSession.set(session, chatHistory);
+    
+    res.json({ 
+      message: result.answer,
+      sessionId: session 
+    });
+  } catch (error) {
+    logger.fatal(error),
+      res.status(500).json({
+        message: "something went off",
+        status: "error",
+      });
+  }
+});

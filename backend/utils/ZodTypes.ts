@@ -12,4 +12,6 @@ export const fileValidation = z.object({
     originalname: z.string()
 });
 
+export const retrieveShchema = z.object({query : z.string()});
+
 export const textValidDation = z.string().min(20);

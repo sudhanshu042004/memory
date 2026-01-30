@@ -3,7 +3,7 @@ import { textValidDation } from "../utils/ZodTypes";
 import { splitters, vectoreStore } from "../utils/vectorStoreManager";
 import { logger } from "../utils/LogConfig";
 
-const TextRoute = Router();
+export const TextRoute = Router();
 
 TextRoute.post('/', async (req: Request, res: Response) => {
     const { text } = req.body;

@@ -8,6 +8,7 @@ import { AskLLM } from "./routes/AskLLm.route.js";
 import { verifyUser } from "./middleware/verifyToken.js";
 import { pdfRouter } from "./routes/PdfHandling.route.js";
 import { imageRouter } from "./routes/ImageHandle.route.js";
+import { TextRoute } from "./routes/TextHandle.route.js";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use('/api/v1/webExtract',ExtractWeb);
 app.use('/api/v1/ask',AskLLM);
 app.use('/api/v1/fileUpload',pdfRouter);
 app.use('/api/v1/imagePost',imageRouter);
+app.use('/api/v1/customText',TextRoute)
 
 
 app.use((req, res) => {

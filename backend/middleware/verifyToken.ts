@@ -8,7 +8,7 @@ function verifyToken(tokenString : string){
     }
     const JwtPayload = jwt.verify(tokenString,secret) as JwtPayload;
     if(!JwtPayload){
-        return null;
+        throw new Error("Invalid JWT token");
     }
     return JwtPayload;
 }
