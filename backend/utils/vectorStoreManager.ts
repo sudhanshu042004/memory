@@ -148,6 +148,8 @@ const retrieveNode = async (state: typeof StateAnnotation.State) => {
       filter
     );
 
+    console.log(retrievedDocs)
+
     return { context: retrievedDocs };
   } catch (error) {
     console.error("Error in retrieveNode:", error);
@@ -197,6 +199,7 @@ Respond naturally and conversationally. If the user is sharing information, ackn
         }\ncontent: ${doc.pageContent}`
     )
     .join("\n\n");
+
 
   const messages = await promptTemplate.invoke({
     question: state.standaloneQuestion || state.question,
