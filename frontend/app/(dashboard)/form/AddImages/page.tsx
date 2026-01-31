@@ -1,8 +1,8 @@
+import { api_url } from "@/utils/contants";
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, useFonts } from "@expo-google-fonts/inter";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
-import { Stack } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -16,7 +16,6 @@ import {
   View
 } from "react-native";
 
-const API_URL = "http://192.168.3.101:5000/api/v1/imagePost"; 
 
 const AddImageScreen = () => {
   const [fontsLoaded] = useFonts({
@@ -58,7 +57,7 @@ const AddImageScreen = () => {
 
     try {
       const token=await AsyncStorage.getItem('session')
-      const response = await fetch(API_URL, {
+      const response = await fetch(api_url+'/imagePost', {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",

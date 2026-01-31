@@ -125,15 +125,12 @@ const rewriteQueryNode = async (state: typeof StateAnnotation.State) => {
 
   const standaloneQuestion = response.content as string;
 
-  console.log("Original question:", state.question);
-  console.log("Rewritten question:", standaloneQuestion);
 
   return { standaloneQuestion };
 };
 
 const retrieveNode = async (state: typeof StateAnnotation.State) => {
   if (!state.needsRetrieval) {
-    console.log("Skipping retrieval - conversational query");
     return { context: [] };
   }
   try {
@@ -148,7 +145,6 @@ const retrieveNode = async (state: typeof StateAnnotation.State) => {
       filter
     );
 
-    console.log(retrievedDocs)
 
     return { context: retrievedDocs };
   } catch (error) {

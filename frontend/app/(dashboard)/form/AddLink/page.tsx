@@ -1,22 +1,21 @@
+import { api_url } from "@/utils/contants";
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, useFonts } from "@expo-google-fonts/inter";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Stack } from "expo-router";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Linking,
-    Pressable,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View
+  ActivityIndicator,
+  Alert,
+  Linking,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const API_URL = "http://192.168.3.101:5000/api/v1/webExtract";
 
 const AddUrlScreen = () => {
   const [fontsLoaded] = useFonts({
@@ -59,7 +58,7 @@ const AddUrlScreen = () => {
 
     try {
       const token=await AsyncStorage.getItem("session")
-      const response = await fetch(API_URL, {
+      const response = await fetch(api_url+'/webExtract', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

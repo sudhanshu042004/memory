@@ -1,3 +1,4 @@
+import { api_url } from "@/utils/contants";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -5,6 +6,8 @@ import {
   useFonts,
 } from "@expo-google-fonts/inter";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as DocumentPicker from "expo-document-picker";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -16,10 +19,7 @@ import {
   Text,
   View,
 } from "react-native";
-import * as DocumentPicker from "expo-document-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = "http://192.168.3.101:5000/api/v1/fileUpload";
 
 const AddPdfScreen = () => {
   const [fontsLoaded] = useFonts({
@@ -73,7 +73,7 @@ const AddPdfScreen = () => {
         type: "application/pdf",
       } as any);
        const token =await AsyncStorage.getItem("session")
-      const response = await fetch(API_URL, {
+      const response = await fetch(api_url+'/fileUpload', {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",

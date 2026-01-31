@@ -1,3 +1,4 @@
+import { api_url } from "@/utils/contants";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -18,8 +19,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-
-const API_URL = "http://192.168.3.101:5000/api/v1/text"; 
 
 
 const AddTextScreen = () => {
@@ -49,7 +48,7 @@ const AddTextScreen = () => {
      const token = await AsyncStorage.getItem('session')
      console.log(token)
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(api_url+'/text', {
         method: "POST",
         headers: { "Content-Type": "application/json",
             "Cookie": `token=${token}`

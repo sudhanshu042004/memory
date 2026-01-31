@@ -1,8 +1,11 @@
-import { Text, View, StyleSheet, TextInput, SafeAreaView, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native"
-import { LinearGradient } from 'expo-linear-gradient'
-import { Ionicons } from '@expo/vector-icons'
-import { useState } from "react"
+import { api_url } from "@/utils/contants"
 import { Inter_400Regular, Inter_500Medium, Inter_700Bold, useFonts } from "@expo-google-fonts/inter"
+import { Ionicons } from '@expo/vector-icons'
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { LinearGradient } from 'expo-linear-gradient'
+import { useEffect, useRef, useState } from "react"
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
 
 
 const AskPage = () => {
@@ -13,12 +16,38 @@ const AskPage = () => {
       Inter_700Bold,
       Inter_500Medium,
     });
+    const scrollViewReff = useRef<ScrollView | null>(null);
+
+    useEffect(()=>{
+      scrollViewReff.current?.scrollToEnd({animated : true}); // move that into focus
+    },[conversation])
     
-  const handleSend = () => {
-    if (!input.trim()) return
+  const handleSend = async() => {
+    if (!input.trim()) return;
+    const text = input.trim();
+    setInput("");
+    setConversation(conver => [...conver,{role:"user",text:text}]);
+    try {
+      const token = await AsyncStorage.getItem("session") //geting the token
+      const response = await fetch(api_url + '/ask',{
+        method : "POST",
+        headers : {
+          "Content-Type": "application/json",
+          "Cookie":`token=${token}`
+        },
+        body : JSON.stringify({
+          query : text,
+        })
+      });
+      const data = await response.json();
+      setConversation(conver => [...conver,{role:"ai",text:data.message}]);
+
+    } catch (error) {
+      console.log("error came up....");
+    }
     
-    setConversation([...conversation, { role: "user", text: input }])
-    setInput("") 
+    
+    
   }
 
   const EmptyState = () => (
@@ -48,15 +77,9 @@ const AskPage = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>AI Memory Assistant</Text>
-        <Text style={styles.headerSubtitle}>Ask anything about your memories</Text>
-
-        {/* --- Motivation Line --- */}
-        <Text style={styles.headerMotivation}>✨ Your AI remembers so you don’t have to!</Text>
-      </View>
 
       <ScrollView 
+        ref={scrollViewReff}
         style={styles.contentContainer}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
@@ -90,7 +113,7 @@ const AskPage = () => {
             <View style={styles.inputWrapper}>
               <TextInput 
                 style={styles.taskInput} 
-                placeholder="How can AI-Memory help you today?"
+                placeholder="need to remember?"
                 placeholderTextColor="#8E8E93"
                 multiline={true}
                 textAlignVertical="center"

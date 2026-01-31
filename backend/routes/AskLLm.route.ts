@@ -13,6 +13,7 @@ AskLLM.post("/", async (req: Request, res: Response) => {
   const userId = req.userId;
   const { data, error } = QueryValidation.safeParse(query);
   if (!data || error) {
+    logger.error("invalid query");
     res.json({
       message: "invalid query",
       status: "error",
@@ -40,7 +41,7 @@ AskLLM.post("/", async (req: Request, res: Response) => {
     }
 
     chatSession.set(session, chatHistory);
-    
+    logger.info("response generated")
     res.json({ 
       message: result.answer,
       sessionId: session 

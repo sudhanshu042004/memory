@@ -1,0 +1,1 @@
+export const api_url = process.env.EXPO_PUBLIC_URL || "http://localhost:3000/api/v1"
