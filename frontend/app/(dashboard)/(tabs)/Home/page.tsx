@@ -1,7 +1,7 @@
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { Stack, useRouter } from "expo-router";
 import React from "react";
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 import {
   GreetingSection,
@@ -11,6 +11,7 @@ import {
   RecentActivity,
   StatsSection
 } from '@/components/index';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const [fontsLoaded] = useFonts({
@@ -23,6 +24,7 @@ export default function HomeScreen() {
   }
 
   return (
+
     <SafeAreaView style={styles.safeArea}>
       <Stack.Screen
         options={{
@@ -34,13 +36,13 @@ export default function HomeScreen() {
           headerRight: () => <HeaderButtons router={router} type="right" />,
           headerLeft: () => <HeaderButtons router={router} type="left" />,
         }}
-      />
+        />
 
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
         bounces={true}
-      >
+        >
         <GreetingSection />
         <QuickActions router={router} />
         <StatsSection />

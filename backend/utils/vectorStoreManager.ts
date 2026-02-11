@@ -29,7 +29,7 @@ export const imageLLM = new ChatGoogleGenerativeAI({
 });
 
 export const embeddings = new GoogleGenerativeAIEmbeddings({
-  model: "text-embedding-004",
+  model: "gemini-embedding-001",
   taskType: TaskType.RETRIEVAL_DOCUMENT,
   title: "Document title",
 });
@@ -37,7 +37,7 @@ export const embeddings = new GoogleGenerativeAIEmbeddings({
 const pinecone = new PinconeClient({
   apiKey: process.env.PINECONE_KEY!,
 });
-const index = pinecone.index("ai-memory");
+const index = pinecone.index("ai-memory-with");
 
 export const vectoreStore = new PineconeStore(embeddings, {
   pineconeIndex: index,
