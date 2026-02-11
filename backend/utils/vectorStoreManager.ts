@@ -14,6 +14,7 @@ import {
 } from "@langchain/langgraph";
 import { pull } from "langchain/hub";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
+import * as prompts from "./Prompts"
 
 const promptTemplate = await pull<ChatPromptTemplate>("rlm/rag-prompt");
 
@@ -70,26 +71,10 @@ const StateAnnotation = Annotation.Root({
 
 // Node 1 : classify if the query needs retireval or not
 const classifyQueryNode = async (state: typeof StateAnnotation.State) => {
-  const classificationPrompt = `Analyze this user message and determine if it requires searching a knowledge base or if it's a conversational message.
 
-  User message: "${state.question}"
-
-A query needs retrieval if it:
-- Asks for specific information, facts, or details
-- Contains "who", "what", "when", "where", "why", "how" questions
-- Asks about a specific topic, person, or event
-- Requests data or documentation
-
-A query does NOT need retrieval if it:
-- Is casual conversation (greetings, thanks, acknowledgments)
-- Is sharing personal information
-- Is expressing emotions or opinions
-- Is a simple statement without a question
-
-Respond with only "RETRIEVE" or "CONVERSATIONAL"`;
 
   const response = await llm.invoke([
-    { role: "human", content: classificationPrompt },
+    { role: "human", content: prompts.classificationPrompt(state.question) },
   ]);
 
   const classification = (response.content as string).trim().toUpperCase();
@@ -112,16 +97,8 @@ const rewriteQueryNode = async (state: typeof StateAnnotation.State) => {
     .map((msg) => `${msg._getType()}: ${msg.content}`)
     .join("\n");
 
-  const rewritePrompt = `Given a chat history and a follow-up question, rephrase the follow-up question to be a standalone question that contains all necessary context.
 
-  Chat History:
-  ${chatHistoryStr}
-
-  Follow-up Question: ${state.question}
-
-  Standalone Question:`;
-
-  const response = await llm.invoke([{ role: "user", content: rewritePrompt }]);
+  const response = await llm.invoke([{ role: "user", content: prompts.rewritePrompt(chatHistoryStr,state.question) }]);
 
   const standaloneQuestion = response.content as string;
 
@@ -162,15 +139,9 @@ const generateNode = async (state: typeof StateAnnotation.State) => {
       .map((msg) => `${msg._getType()}: ${msg.content}`)
       .join("\n");
 
-    const conversationalPrompt = `You are a helpful AI assistant. Have a natural conversation with the user.
-
-${chatHistoryStr ? `Chat History:\n${chatHistoryStr}\n` : ""}
-User: ${state.question}
-
-Respond naturally and conversationally. If the user is sharing information, acknowledge it warmly.`;
-
+    
     const response = await llm.invoke([
-      { role: "user", content: conversationalPrompt },
+      { role: "user", content: prompts.conversationalPrompt(chatHistoryStr,state.question) },
     ]);
 
     return { answer: response.content as string };
