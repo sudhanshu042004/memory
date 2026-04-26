@@ -31,11 +31,11 @@ AskLLM.post("/", async (req: Request, res: Response) => {
       userId : userId || undefined,
     })
 
-     // Update chat history
+     
     chatHistory.push(new HumanMessage(data));
     chatHistory.push(new AIMessage(result.answer));
     
-    // Keep only last 10 messages to avoid context overflow
+    
     if (chatHistory.length > 10) {
       chatHistory.splice(0, chatHistory.length - 10);
     }

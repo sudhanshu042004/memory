@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (_req: Express.Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-    // Allow common image formats
+    
     if (file.mimetype.startsWith("image/")) {
         cb(null, true);
     } else {
@@ -44,12 +44,12 @@ imageRouter.post('/', upload.single("image"), async (req: express.Request, res: 
             });
         }
 
-        // Read the file from disk since we're using disk storage
+        
         const filePath = req.file.path;
         const buffer = fs.readFileSync(filePath);
         const base64Image = buffer.toString("base64");
         
-        // Get the correct mime type from the uploaded file
+        
         const mimeType = req.file.mimetype;
 
         const messages: BaseMessageLike[] = [
@@ -61,8 +61,8 @@ imageRouter.post('/', upload.single("image"), async (req: express.Request, res: 
             })
         ];
 
-        // Remove the extra array wrapper - this was the main issue
-        //@ts-ignore
+        
+        
         const result = await imageLLM.invoke(messages);
         
         const metadata = {
@@ -77,7 +77,22 @@ imageRouter.post('/', upload.single("image"), async (req: express.Request, res: 
         const docs = await splitters.createDocuments([result.content.toString()], [metadata]);
         await vectoreStore.addDocuments(docs);
 
-        // Clean up the uploaded file if you don't need to keep it
+        
+        if (req.userId) {
+            import("../prisma/client.js").then(async ({ prisma }) => {
+                await prisma.memory.create({
+                    data: {
+                        userId: req.userId!,
+                        type: "image",
+                        title: req.file?.originalname || "Image file",
+                        content: result.content ? result.content.toString().substring(0, 100) : "An image file",
+                        isFavorite: false,
+                    }
+                });
+            }).catch(e => logger.error("Failed to save memory to Prisma:", e));
+        }
+
+        
         fs.unlinkSync(filePath);
 
         res.json({

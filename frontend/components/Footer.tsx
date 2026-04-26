@@ -26,16 +26,16 @@ const Footer: React.FC<FooterProps> = ({ currentScreen }) => {
   
   return (
     <View style={styles.footerWrapper}>
-      {/* Background blur effect */}
+      {}
       <BlurView 
         intensity={Platform.OS === 'ios' ? 100 : 80}
         tint="dark"
         style={styles.blurContainer}
       >
-        {/* Overlay for better visibility */}
+        {}
         <View style={styles.overlay} />
         
-        {/* Footer content */}
+        {}
         <View style={styles.footerContent}>
           <TouchableOpacity
             style={styles.footerItem}
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 24,
     overflow: 'hidden',
-    // Enhanced shadow for better depth
+    
     elevation: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -10 },

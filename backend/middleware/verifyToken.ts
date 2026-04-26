@@ -1,38 +1,50 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
+
 const secret = process.env.JWT_SECRET;
 
-function verifyToken(tokenString : string){
-    if(!secret){
-        throw new Error("No jwt secret found");
-    }
-    const JwtPayload = jwt.verify(tokenString,secret) as JwtPayload;
-    if(!JwtPayload){
-        throw new Error("Invalid JWT token");
-    }
-    return JwtPayload;
+function verifyToken(tokenString: string): JwtPayload {
+  if (!secret) {
+    throw new Error("JWT_SECRET is not configured");
+  }
+  const payload = jwt.verify(tokenString, secret) as JwtPayload;
+  if (!payload) {
+    throw new Error("Invalid JWT token");
+  }
+  return payload;
 }
-export function verifyUser(req:Request,res:Response,next:NextFunction){
-    const cookie = req.headers['cookie'];
-    if(!cookie || cookie == ''){
-        res.status(401).json({
-            'status' : 'error',
-            'message' : 'invalid token',
-        })
-        return;
-    }
-    
-    const tokenString = cookie.split('=')[1]!;
+
+export function verifyUser(req: Request, res: Response, next: NextFunction) {
+  
+  const authHeader = req.headers["authorization"];
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    res.status(401).json({
+      status: "error",
+      message: "Unauthorized: No token provided. Send Authorization: Bearer <token>",
+    });
+    return;
+  }
+
+  const tokenString = authHeader.split(" ")[1];
+
+  if (!tokenString) {
+    res.status(401).json({
+      status: "error",
+      message: "Unauthorized: Token is missing.",
+    });
+    return;
+  }
+
+  try {
     const userPayload = verifyToken(tokenString);
-    if(!userPayload){
-        res.status(401).json({
-            'status' : 'error',
-            'message' : 'invalid token',
-        })
-        return;
-    }
     req.userId = userPayload["userId"];
     req.email = userPayload["email"];
-
     next();
+  } catch (err) {
+    res.status(401).json({
+      status: "error",
+      message: "Unauthorized: Invalid or expired token.",
+    });
+  }
 }

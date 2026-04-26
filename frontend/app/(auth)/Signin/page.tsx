@@ -107,30 +107,30 @@ const SigninPage = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Error Message */}
+          {}
           {error && <Text style={styles.errorText}>{error}</Text>}
 
-          {/* Signin Button */}
+          {}
           <TouchableOpacity style={styles.signinButton} onPress={handleLogin} disabled={loading}>
             {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.signinButtonText}>SIGN IN</Text>}
           </TouchableOpacity>
 
-          {/* Forgot Password */}
+          {}
           <TouchableOpacity onPress={() => router.push("/(auth)/ForgotPassword/page")}>
             <Text style={styles.forgotText}>Forgot Password?</Text>
           </TouchableOpacity>
 
-          {/* OR Divider */}
+          {}
           <View style={styles.dividerContainer}>
             <View style={styles.divider} />
             <Text style={styles.dividerText}>OR</Text>
             <View style={styles.divider} />
           </View>
 
-          {/* Google Button */}
+          {}
           <GoogleButton googleText="Sign in with Google" handleLogin={signIn} />
 
-          {/* Footer Signup */}
+          {}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Don’t have an account? </Text>
             <TouchableOpacity onPress={() => router.push("/(auth)/Signup/page")}>

@@ -27,7 +27,7 @@ const SettingScreen = () => {
                 <AiPersonalisationComponent />
                 <SecurityComponent />
 
-                {/* logOut */}
+                {}
                 <Pressable onPress={()=>handleLogOut()} >
                     <View style={styles.boxContainer} >
                         <View style={styles.boxContainerRow}>

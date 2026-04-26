@@ -12,13 +12,14 @@ import {
   ActivityIndicator,
   Alert,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "@/context/auth";
 
 
 const AddTextScreen = () => {
@@ -35,6 +36,8 @@ const AddTextScreen = () => {
     message: string;
   } | null>(null);
 
+  const { fetchWithAuth } = useAuth();
+
   if (!fontsLoaded) return null;
 
   const saveText = async () => {
@@ -45,14 +48,11 @@ const AddTextScreen = () => {
 
     setIsProcessing(true);
     setProcessingResult(null);
-     const token = await AsyncStorage.getItem('session')
-     console.log(token)
+
     try {
-      const response = await fetch(api_url+'/text', {
+      const response = await fetchWithAuth(`${process.env.EXPO_PUBLIC_API_BASE}/customText`, {
         method: "POST",
-        headers: { "Content-Type": "application/json",
-            "Cookie": `token=${token}`
-         },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: textInput }),
       });
 
@@ -94,7 +94,7 @@ const AddTextScreen = () => {
           />
         </View>
 
-        {/* Save Button */}
+        {}
         {textInput.length > 0 && (
           <View style={styles.boxContainer}>
             {!isProcessing ? (
@@ -120,7 +120,7 @@ const AddTextScreen = () => {
           </View>
         )}
 
-        {/* Result */}
+        {}
         {processingResult && (
           <View style={styles.boxContainer}>
             <View style={styles.resultHeader}>

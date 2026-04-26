@@ -27,6 +27,21 @@ TextRoute.post('/', async (req: Request, res: Response) => {
 
         await vectoreStore.addDocuments(docs);
 
+        
+        if (req.userId) {
+            import("../prisma/client.js").then(async ({ prisma }) => {
+                await prisma.memory.create({
+                    data: {
+                        userId: req.userId!,
+                        type: "text",
+                        title: text.length > 30 ? text.substring(0, 30) + "..." : text,
+                        content: text,
+                        isFavorite: false,
+                    }
+                });
+            }).catch(e => logger.error("Failed to save memory to Prisma:", e));
+        }
+
         res.json({
             message: "successfully stored",
             status: "statusOK"

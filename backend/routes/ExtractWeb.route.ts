@@ -27,7 +27,7 @@ ExtractWeb.post("/", async (req: Request, res: Response) => {
     });
     const docs = await cheerioLoader.load();
 
-    // Check if content was actually extracted
+    
     if (!docs || docs.length === 0) {
       logger.warn(`No content extracted from ${url}`);
       res.status(400).json({
@@ -61,6 +61,22 @@ ExtractWeb.post("/", async (req: Request, res: Response) => {
     }));
 
     await vectoreStore.addDocuments(docWithMetaData);
+
+    
+    if (req.userId) {
+        import("../prisma/client.js").then(async ({ prisma }) => {
+            await prisma.memory.create({
+                data: {
+                    userId: req.userId!,
+                    type: "link",
+                    title: url,
+                    content: docs[0]?.pageContent ? docs[0].pageContent.substring(0, 100) : "Extracted Web Link",
+                    isFavorite: false,
+                }
+            });
+        }).catch(e => logger.error("Failed to save memory to Prisma:", e));
+    }
+
     res.json({
       message: "webData successfully extracted",
       status: "statusOk",

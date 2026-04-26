@@ -4,50 +4,47 @@ import { Ionicons } from '@expo/vector-icons'
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { LinearGradient } from 'expo-linear-gradient'
 import { useEffect, useRef, useState } from "react"
+import { useAuth } from "@/context/auth"
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 
 const AskPage = () => {
-  const [conversation, setConversation] = useState<{role: string, text: string}[]>([])
+  const { fetchWithAuth } = useAuth();
+  const [conversation, setConversation] = useState<{ role: string, text: string }[]>([])
   const [input, setInput] = useState("")
-   const [fontsLoaded] = useFonts({
-      Inter_400Regular,
-      Inter_700Bold,
-      Inter_500Medium,
-    });
-    const scrollViewReff = useRef<ScrollView | null>(null);
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+    Inter_700Bold,
+    Inter_500Medium,
+  });
+  const scrollViewReff = useRef<ScrollView | null>(null);
 
-    useEffect(()=>{
-      scrollViewReff.current?.scrollToEnd({animated : true}); // move that into focus
-    },[conversation])
-    
-  const handleSend = async() => {
+  useEffect(() => {
+    scrollViewReff.current?.scrollToEnd({ animated: true }); // move that into focus
+  }, [conversation])
+
+  const handleSend = async () => {
     if (!input.trim()) return;
     const text = input.trim();
     setInput("");
-    setConversation(conver => [...conver,{role:"user",text:text}]);
+    setConversation(conver => [...conver, { role: "user", text: text }]);
     try {
-      const token = await AsyncStorage.getItem("session") //geting the token
-      const response = await fetch(api_url + '/ask',{
-        method : "POST",
-        headers : {
-          "Content-Type": "application/json",
-          "Cookie":`token=${token}`
-        },
-        body : JSON.stringify({
-          query : text,
+      const response = await fetchWithAuth(`${process.env.EXPO_PUBLIC_API_BASE}/ask`, {
+        method: "POST",
+        body: JSON.stringify({
+          query: text,
         })
       });
       const data = await response.json();
-      setConversation(conver => [...conver,{role:"ai",text:data.message}]);
+      setConversation(conver => [...conver, { role: "ai", text: data.message }]);
 
     } catch (error) {
       console.log("error came up....");
     }
-    
-    
-    
+
+
+
   }
 
   const EmptyState = () => (
@@ -64,7 +61,7 @@ const AskPage = () => {
           Ask any question about your stored memories and get intelligent responses
         </Text>
 
-        {/* --- Quick Suggestions --- */}
+        {}
         <View style={styles.suggestionBox}>
           <Text style={styles.suggestionTitle}>💡 Try asking:</Text>
           <Text style={styles.suggestionItem}>• What did I do last weekend?</Text>
@@ -78,7 +75,7 @@ const AskPage = () => {
   return (
     <SafeAreaView style={styles.container}>
 
-      <ScrollView 
+      <ScrollView
         ref={scrollViewReff}
         style={styles.contentContainer}
         showsVerticalScrollIndicator={false}
@@ -88,10 +85,10 @@ const AskPage = () => {
           <EmptyState />
         ) : (
           conversation.map((item, index) => (
-            <View 
-              key={index} 
+            <View
+              key={index}
               style={[
-                styles.messageContainer, 
+                styles.messageContainer,
                 item.role === "user" ? styles.userMessage : styles.aiMessage
               ]}
             >
@@ -101,18 +98,18 @@ const AskPage = () => {
         )}
       </ScrollView>
 
-      {/* Input*/}
-     <KeyboardAvoidingView
-           behavior={Platform.OS === 'android' ? 'padding' : 'height'}
-         >
+      {}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+      >
         <View style={styles.inputSection}>
           <LinearGradient
             colors={['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.05)']}
             style={styles.inputContainer}
           >
             <View style={styles.inputWrapper}>
-              <TextInput 
-                style={styles.taskInput} 
+              <TextInput
+                style={styles.taskInput}
                 placeholder="need to remember?"
                 placeholderTextColor="#8E8E93"
                 multiline={true}
@@ -153,18 +150,18 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: 'white',
     fontSize: 24,
-    fontFamily:"Inter_500Medium",
+    fontFamily: "Inter_500Medium",
     marginBottom: 4,
   },
   headerSubtitle: {
     color: '#8E8E93',
     fontSize: 16,
-    fontFamily:"Inter_500Medium",
+    fontFamily: "Inter_500Medium",
   },
   headerMotivation: {
     color: '#6D78E7',
     fontSize: 14,
-    fontFamily:"Inter_400Regular",
+    fontFamily: "Inter_400Regular",
     marginTop: 6,
   },
   contentContainer: {
@@ -199,7 +196,7 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: 'white',
     fontSize: 24,
-    fontFamily:"Inter_500Medium",
+    fontFamily: "Inter_500Medium",
     marginBottom: 12,
     textAlign: 'center',
   },
@@ -209,7 +206,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 20,
-    fontFamily:"Inter_500Medium",
+    fontFamily: "Inter_500Medium",
   },
   suggestionBox: {
     marginTop: 10,
@@ -253,7 +250,7 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     paddingVertical: 8,
     paddingRight: 12,
-    fontFamily:"Inter_500Medium",
+    fontFamily: "Inter_500Medium",
   },
   sendButton: {
     marginLeft: 8,
@@ -283,6 +280,6 @@ const styles = StyleSheet.create({
   messageText: {
     color: "white",
     fontSize: 16,
-    fontFamily:"Inter_500Medium",
+    fontFamily: "Inter_500Medium",
   }
 })

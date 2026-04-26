@@ -13,12 +13,13 @@ import {
   ActivityIndicator,
   Alert,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "@/context/auth";
 
 
 const AddPdfScreen = () => {
@@ -36,9 +37,11 @@ const AddPdfScreen = () => {
     documentsProcessed?: number;
   } | null>(null);
 
+  const { fetchWithAuth } = useAuth();
+
   if (!fontsLoaded) return null;
 
-  // 📂 PDF picker
+  
   const pickPdf = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -47,7 +50,7 @@ const AddPdfScreen = () => {
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        setPdfFile(result.assets[0]); // sirf ek file lenge
+        setPdfFile(result.assets[0]); 
         setProcessingResult(null);
       }
     } catch (err) {
@@ -55,7 +58,7 @@ const AddPdfScreen = () => {
     }
   };
 
-  // 🚀 Process PDF with backend
+  
   const processPdf = async () => {
     if (!pdfFile) {
       Alert.alert("No PDF", "Please select a PDF first.");
@@ -72,14 +75,11 @@ const AddPdfScreen = () => {
         name: pdfFile.name,
         type: "application/pdf",
       } as any);
-       const token =await AsyncStorage.getItem("session")
-      const response = await fetch(api_url+'/fileUpload', {
+      
+      const response = await fetchWithAuth(`${process.env.EXPO_PUBLIC_API_BASE}/fileUpload`, {
         method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "Cookie":`token=${token}`
-        },
         body: formData,
+        
       });
 
       const data = await response.json();
@@ -112,7 +112,7 @@ const AddPdfScreen = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.textHeading}>Add PDF</Text>
 
-        {/* PDF Input Box */}
+        {}
         <View style={styles.boxContainer}>
           <Pressable onPress={pickPdf}>
             <View style={styles.boxContainerRow}>
@@ -131,7 +131,7 @@ const AddPdfScreen = () => {
           </Pressable>
         </View>
 
-        {/* Process PDF */}
+        {}
         {pdfFile && (
           <>
             <Text style={styles.textHeading}>Process PDF</Text>
@@ -171,7 +171,7 @@ const AddPdfScreen = () => {
           </>
         )}
 
-        {/* Result */}
+        {}
         {processingResult && (
           <>
             <Text style={styles.textHeading}>
@@ -220,7 +220,7 @@ const AddPdfScreen = () => {
           </>
         )}
 
-        {/* Empty state */}
+        {}
         {!pdfFile && !processingResult && (
           <>
             <Text style={styles.textHeading}>Getting Started</Text>
