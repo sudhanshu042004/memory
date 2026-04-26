@@ -76,10 +76,10 @@ const ForgotPasswordPage = () => {
             returnKeyType="done"
           />
 
-          {/* Error Message */}
+          {}
           {error && <Text style={styles.errorText}>{error}</Text>}
 
-          {/* Reset Button */}
+          {}
           <TouchableOpacity 
             style={styles.resetButton} 
             onPress={handleForgotPassword} 
@@ -90,7 +90,7 @@ const ForgotPasswordPage = () => {
               : <Text style={styles.resetButtonText}>SEND RESET PASSWORD</Text>}
           </TouchableOpacity>
 
-          {/* Back to Signin */}
+          {}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Remember password? </Text>
             <TouchableOpacity onPress={() => router.push("/(auth)/Signin/page")}>

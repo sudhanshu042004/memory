@@ -2,18 +2,23 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const statsData = [
-  [
-    { icon: "library-outline", color: "#4A90E2", title: "Total Memories", value: "1,247", subtext: "+12 this week" },
-    { icon: "trending-up-outline", color: "#50C878", title: "This Week", value: "23", subtext: "+8 from last week" },
-  ],
-  [
-    { icon: "flame-outline", color: "#FF6B6B", title: "Streak", value: "7 days", subtext: "Keep it up!" },
-    { icon: "heart-outline", color: "#FF69B4", title: "Favorites", value: "89", subtext: "Most loved" },
-  ],
-];
+interface StatsOverviewProps {
+  totalMemories?: number;
+  thisWeekStreak?: string;
+  favoritesCount?: number;
+}
 
-export default function StatsOverview() {
+export default function StatsOverview({ totalMemories = 0, thisWeekStreak = "0", favoritesCount = 0 }: StatsOverviewProps) {
+  const statsData = [
+    [
+      { icon: "library-outline", color: "#4A90E2", title: "Total Memories", value: totalMemories.toString(), subtext: "All time" },
+      { icon: "trending-up-outline", color: "#50C878", title: "This Week", value: "0", subtext: "Recent additions" },
+    ],
+    [
+      { icon: "flame-outline", color: "#FF6B6B", title: "Streak", value: `${thisWeekStreak} days`, subtext: "Keep it up!" },
+      { icon: "heart-outline", color: "#FF69B4", title: "Favorites", value: favoritesCount.toString(), subtext: "Most loved" },
+    ],
+  ];
   return (
     <View style={styles.statsSection}>
       <Text style={styles.sectionTitle}>Your Stats</Text>

@@ -1,10 +1,12 @@
 import React, { useContext, useState } from "react";
 import { Inter_400Regular, Inter_500Medium, Inter_700Bold, useFonts } from "@expo-google-fonts/inter";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { Text, View, StyleSheet, Pressable, TextInput, Modal, TouchableOpacity, Alert } from "react-native";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { UserContext } from "@/context/UserContext";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 
 const defaultProfilePic = "https://picsum.photos/seed/696/3000/2000";
 
@@ -15,6 +17,7 @@ const ProfilePage = () => {
     Inter_500Medium,
   });
   const userContext = useContext(UserContext);
+  const router = useRouter();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [activeField, setActiveField] = useState("");
@@ -44,11 +47,11 @@ const ProfilePage = () => {
       return;
     }
 
-    // Open gallery
+    
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1], // square crop
+      aspect: [1, 1], 
       quality: 0.7,
     });
 
@@ -58,27 +61,23 @@ const ProfilePage = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Stack.Screen
         options={{
-          headerShown: true,
-          headerStyle: { backgroundColor: "black" },
-          headerTitleStyle: {
-            color: "white",
-            fontFamily: "Inter_500Medium",
-            fontSize: 19,
-            fontWeight: "500",
-          },
-          headerTintColor: "white",
-          title: "Profile",
-          animation: "slide_from_right",
+          headerShown: false,
         }}
       />
 
-      <Text style={styles.profileHeading}>Profile</Text>
+      <View style={styles.customHeader}>
+        <Pressable onPress={() => router.back()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </Pressable>
+        <Text style={styles.customHeaderTitle}>Profile</Text>
+        <View style={{ width: 24, marginHorizontal: 15 }} />
+      </View>
 
       <View style={styles.userDetailsContainer}>
-        {/* Profile picture row */}
+        {}
         <Pressable onPress={pickImage}>
           <View style={styles.pictureContainer}>
             <Text style={styles.pictureText}>Profile Picture</Text>
@@ -95,7 +94,7 @@ const ProfilePage = () => {
 
         <View style={styles.hr} />
 
-        {/* Email */}
+        {}
         <Pressable onPress={() => handleOpenModal("Email")}>
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldLabel}>Email</Text>
@@ -107,7 +106,7 @@ const ProfilePage = () => {
 
         <View style={styles.hr} />
 
-        {/* Full Name */}
+        {}
         <Pressable onPress={() => handleOpenModal("Full Name")}>
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldLabel}>Full Name</Text>
@@ -119,7 +118,7 @@ const ProfilePage = () => {
 
         <View style={styles.hr} />
 
-        {/* Username */}
+        {}
         <Pressable onPress={() => handleOpenModal("Username")}>
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldLabel}>Username</Text>
@@ -135,7 +134,7 @@ const ProfilePage = () => {
         <View style={styles.hr} />
       </View>
 
-      {/* Modal */}
+      {}
       <Modal visible={modalVisible} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
@@ -185,7 +184,7 @@ const ProfilePage = () => {
           </View>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -195,13 +194,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
-    paddingHorizontal: 20,
   },
-  profileHeading: {
+  customHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    backgroundColor: "black",
+  },
+  backButton: {
+    marginHorizontal: 15,
+    padding: 8,
+    borderRadius: 50,
+    backgroundColor: "#1E1F22",
+  },
+  customHeaderTitle: {
     color: "white",
-    fontSize: 24,
+    fontSize: 19,
     fontFamily: "Inter_500Medium",
-    marginVertical: 20,
   },
   userDetailsContainer: {
     borderColor: "#5a5b5e",
@@ -210,6 +220,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#17181b",
     paddingVertical: 15,
     paddingHorizontal: 15,
+    marginHorizontal: 20,
+    marginTop: 20,
   },
   pictureContainer: {
     flexDirection: "row",
@@ -352,6 +364,7 @@ const styles = StyleSheet.create({
     color: "#F4817E"
   },
   accountDelete:{
-    marginTop:30
+    marginTop:30,
+    marginHorizontal: 20,
   }
 });

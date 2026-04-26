@@ -96,11 +96,11 @@ const SignupPage = () => {
       <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'padding' : 'height'} style={styles.container}>
         <View style={styles.innerContainer}>
 
-          {/* Header */}
+          {}
           <Text style={styles.welcome}>Create Account For AI-Memory</Text>
           <Text style={styles.subtitle}>Sign up to start your journey</Text>
 
-          {/* Inputs */}
+          {}
           <TextInput
             style={styles.input}
             placeholder="Full Name"
@@ -126,7 +126,7 @@ const SignupPage = () => {
             returnKeyType="next"
           />
 
-          {/* Password */}
+          {}
           <View style={styles.passwordBox}>
             <TextInput
               style={styles.passwordInput}
@@ -145,7 +145,7 @@ const SignupPage = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Confirm Password */}
+          {}
           <View style={styles.passwordBox}>
             <TextInput
               style={styles.passwordInput}
@@ -164,25 +164,25 @@ const SignupPage = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Error */}
+          {}
           {error && <Text style={styles.errorText}>{error}</Text>}
 
-          {/* Signup Button */}
+          {}
           <TouchableOpacity style={styles.signupButton} onPress={handleSignup} disabled={loading}>
             {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.signupButtonText}>SIGN UP</Text>}
           </TouchableOpacity>
 
-          {/* OR Divider */}
+          {}
           <View style={styles.dividerContainer}>
             <View style={styles.divider} />
             <Text style={styles.dividerText}>OR</Text>
             <View style={styles.divider} />
           </View>
 
-          {/* Google Signup */}
+          {}
           <GoogleButton googleText="Sign up with Google" handleLogin={() => console.log("Google signup")} />
 
-          {/* Footer */}
+          {}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>
             <TouchableOpacity onPress={() => router.push("/(auth)/Signin/page")}>

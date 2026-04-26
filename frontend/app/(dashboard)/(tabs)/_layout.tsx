@@ -11,7 +11,7 @@ export default function TabLayout() {
   });
 
   if (!fontsLoaded) {
-    return null; // Or return null
+    return null; 
   }
   return (
       <View style={styles.container}>
@@ -49,7 +49,7 @@ export default function TabLayout() {
             },
             tabBarActiveTintColor: "white",
             tabBarInactiveTintColor: "#81868f",
-            // tabBarActiveBackgroundColor: "#1e2025"
+            
           }}
         >
           <Tabs.Screen

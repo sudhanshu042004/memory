@@ -16,7 +16,7 @@ export interface Memory {
 }
 
 export type User = {
-  id : number,
+  id : string,
   name : string,
   email : string,
   avatar : null | string,
@@ -28,4 +28,3 @@ export interface BaseComponentProps {
   onSave: (memory: Omit<Memory, 'id' | 'createdAt'>) => void;
   onCancel: () => void;
 }
-// 
