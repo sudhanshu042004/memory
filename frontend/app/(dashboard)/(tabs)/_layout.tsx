@@ -11,76 +11,76 @@ export default function TabLayout() {
   });
 
   if (!fontsLoaded) {
-    return null; 
+    return null;
   }
   return (
-      <View style={styles.container}>
-        <Tabs
-          screenOptions={{
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: "black",
-              borderBottomColor: "transparent",
-              borderBottomWidth: 1,
-            },
-            headerTitleStyle: {
-              color: "white",
-              fontFamily: "Inter_500Medium",
-              fontSize: 19,
-              fontWeight: "500",
-            },
-            tabBarStyle: {
-              position: "absolute",
-              bottom: 20,
-              left: 20,
-              right: 20,
-              height: 70,
-              borderRadius: 20,
-              borderTopWidth: 0,
-              marginHorizontal: 20,
-              backgroundColor: "#151617",
-            },
-            tabBarShowLabel: true,
-            tabBarItemStyle: {
-              paddingTop: 10,
-            },
-            tabBarLabelStyle: {
-              fontFamily: "Inter_500Medium"
-            },
-            tabBarActiveTintColor: "white",
-            tabBarInactiveTintColor: "#81868f",
-            
+    <View style={styles.container}>
+      <Tabs
+        screenOptions={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "black",
+            borderBottomColor: "transparent",
+            borderBottomWidth: 1,
+          },
+          headerTitleStyle: {
+            color: "white",
+            fontFamily: "Inter_500Medium",
+            fontSize: 19,
+            fontWeight: "500",
+          },
+          tabBarStyle: {
+            position: "absolute",
+            bottom: 20,
+            left: 20,
+            right: 20,
+            height: 70,
+            borderRadius: 20,
+            borderTopWidth: 0,
+            marginHorizontal: 20,
+            backgroundColor: "#151617",
+          },
+          tabBarShowLabel: true,
+          tabBarItemStyle: {
+            paddingTop: 10,
+          },
+          tabBarLabelStyle: {
+            fontFamily: "Inter_500Medium"
+          },
+          tabBarActiveTintColor: "white",
+          tabBarInactiveTintColor: "#81868f",
+
+        }}
+      >
+        <Tabs.Screen
+          name="Home/page"
+          options={{
+            title: "Home",
+            tabBarIcon: ({ color }) => (
+              <Feather name="home" color={color} size={24} />
+            ),
           }}
-        >
-          <Tabs.Screen
-            name="Home/page"
-            options={{
-              title: "Home",
-              tabBarIcon: ({ color }) => (
-                <Feather name="home" color={color} size={24} />
-              ),
-            }}
-          />
-          <Tabs.Screen
-            name="ask/page"
-            options={{
-              title: "Ask",
-              tabBarIcon: ({ color }) => (
-                <Ionicons name="chatbox-outline" color={color} size={24} />
-              ),
-            }}
-          />
-          <Tabs.Screen
-            name="Settings/page"
-            options={{
-              title: "Settings",
-              tabBarIcon: ({ color }) => (
-                <Feather name="settings" color={color} size={24} />
-              ),
-            }}
-          />
-        </Tabs>
-      </View>
+        />
+        <Tabs.Screen
+          name="ask/page"
+          options={{
+            title: "Ask",
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="chatbox-outline" color={color} size={24} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="Settings/page"
+          options={{
+            title: "Settings",
+            tabBarIcon: ({ color }) => (
+              <Feather name="settings" color={color} size={24} />
+            ),
+          }}
+        />
+      </Tabs>
+    </View>
   );
 }
 
