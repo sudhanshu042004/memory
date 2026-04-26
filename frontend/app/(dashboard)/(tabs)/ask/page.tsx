@@ -61,7 +61,7 @@ const AskPage = () => {
           Ask any question about your stored memories and get intelligent responses
         </Text>
 
-        {}
+        { }
         <View style={styles.suggestionBox}>
           <Text style={styles.suggestionTitle}>💡 Try asking:</Text>
           <Text style={styles.suggestionItem}>• What did I do last weekend?</Text>
@@ -98,7 +98,7 @@ const AskPage = () => {
         )}
       </ScrollView>
 
-      {}
+      { }
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'padding' : 'height'}
       >
