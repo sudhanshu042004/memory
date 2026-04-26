@@ -6,8 +6,8 @@ import {
   useFonts,
 } from "@expo-google-fonts/inter";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useState } from "react";
+import { UserContext } from "@/context/UserContext";
+import React, { useContext, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -37,6 +37,7 @@ const AddTextScreen = () => {
   } | null>(null);
 
   const { fetchWithAuth } = useAuth();
+  const userCtx = useContext(UserContext);
 
   if (!fontsLoaded) return null;
 
@@ -61,6 +62,7 @@ const AddTextScreen = () => {
       if (response.ok && data.status === "statusOK") {
         setProcessingResult({ success: true, message: data.message });
         setTextInput("");
+        userCtx?.setStatsUpdated(true);
       } else {
         setProcessingResult({
           success: false,

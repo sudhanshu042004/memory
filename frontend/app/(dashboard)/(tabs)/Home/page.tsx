@@ -1,8 +1,9 @@
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter";
 import { Tabs, useRouter, useFocusEffect } from "expo-router";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import { ScrollView, StyleSheet, View, ActivityIndicator } from "react-native";
 import { useAuth } from "@/context/auth";
+import { UserContext } from "@/context/UserContext";
 
 import {
   GreetingSection,
@@ -39,10 +40,19 @@ export default function HomeScreen() {
     }
   }, [fetchWithAuth]);
 
+  const { user, statsUpdated, setStatsUpdated } = useContext(UserContext) ?? {};
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
+
   useFocusEffect(
     useCallback(() => {
-      fetchStats();
-    }, [fetchStats])
+      if (statsUpdated) {
+        fetchStats();
+        setStatsUpdated?.(false);
+      }
+    }, [statsUpdated, fetchStats, setStatsUpdated])
   );
 
   if (!fontsLoaded) {

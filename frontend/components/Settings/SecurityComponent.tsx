@@ -4,7 +4,7 @@ import { StyleSheet, Switch, Text, View } from 'react-native';
 
 export default function SecurityComponent() {
     const [AppLock, setAppLock] = useState(false);
-    const [twoFA,setTwoFA] = useState(false);
+    const [twoFA, setTwoFA] = useState(false);
     return (
         <View>
             <Text style={styles.textHeading}>Security</Text>

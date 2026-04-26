@@ -1,9 +1,9 @@
 import { api_url } from "@/utils/contants";
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, useFonts } from "@expo-google-fonts/inter";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserContext } from "@/context/UserContext";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -28,6 +28,7 @@ const AddImageScreen = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const { fetchWithAuth } = useAuth();
+  const userCtx = useContext(UserContext);
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -68,6 +69,7 @@ const AddImageScreen = () => {
       if (response.ok) {
         Alert.alert("Success", data.message || "Image uploaded successfully!");
         setSelectedImage(null);
+        userCtx?.setStatsUpdated(true);
       } else {
         Alert.alert("Error", data.message || "Failed to upload image.");
       }

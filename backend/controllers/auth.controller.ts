@@ -15,7 +15,7 @@ export async function signup(req: Request, res: Response): Promise<void> {
       password?: string;
     };
 
-    
+
     if (!name || !email || !password) {
       res.status(400).json({
         status: "error",
@@ -38,7 +38,7 @@ export async function signup(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    
+
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       res.status(409).json({
@@ -48,15 +48,15 @@ export async function signup(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    
+
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    
+
     const user = await prisma.user.create({
       data: { name, email, password: hashedPassword },
     });
 
-    
+
     const token = jwt.sign(
       { userId: user.id, email: user.email, name: user.name },
       JWT_SECRET,
@@ -66,7 +66,7 @@ export async function signup(req: Request, res: Response): Promise<void> {
     res.status(201).json({
       status: "success",
       message: "Account created successfully.",
-      cookie: token,           
+      cookie: token,
       user: {
         id: user.id,
         name: user.name,
@@ -95,7 +95,7 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    
+
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       res.status(401).json({
@@ -105,7 +105,7 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       res.status(401).json({
@@ -115,7 +115,7 @@ export async function login(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    
+
     const token = jwt.sign(
       { userId: user.id, email: user.email, name: user.name },
       JWT_SECRET,
@@ -125,7 +125,7 @@ export async function login(req: Request, res: Response): Promise<void> {
     res.status(200).json({
       status: "statusOk",
       message: "Logged in successfully.",
-      cookie: token,           
+      cookie: token,
       user: {
         id: user.id,
         name: user.name,
