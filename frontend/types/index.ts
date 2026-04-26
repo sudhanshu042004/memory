@@ -16,12 +16,12 @@ export interface Memory {
 }
 
 export type User = {
-  id : string,
-  name : string,
-  email : string,
-  avatar : null | string,
-  createdAt : string,
-  updatedAt : string
+  id: string,
+  name: string,
+  email: string,
+  avatar: null | string,
+  createdAt: string,
+  updatedAt: string
 }
 
 export interface BaseComponentProps {

@@ -25,7 +25,7 @@ export default function QuickActions({ router }: QuickActionsProps) {
       <Text style={styles.sectionTitle}>Quick Actions</Text>
       <View style={styles.quickActions}>
         {quickActionsData.map((action, index) => (
-          <Pressable 
+          <Pressable
             key={index}
             style={styles.actionBtn}
             onPress={() => handleQuickAction(action.route)}

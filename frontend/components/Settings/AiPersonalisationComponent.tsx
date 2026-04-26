@@ -28,7 +28,7 @@ export default function AiPersonalisationComponent() {
                     <Text style={styles.boxMainText} >AI personality settings</Text>
                     <Text style={styles.boxSecondaryText}>Set the tone of your AI's response to match your style</Text>
                 </View>
-                
+
                 <View style={styles.dropdownWrapper}>
                     <DropDownPicker
                         open={open}
@@ -41,8 +41,8 @@ export default function AiPersonalisationComponent() {
                         dropDownContainerStyle={styles.dropdownContainer}
                         textStyle={styles.dropdownText}
                         listMode="SCROLLVIEW"
-                        arrowIconStyle={{tintColor : "white"} as ImageStyle}
-                        tickIconStyle={{tintColor : "white"} as ImageStyle}
+                        arrowIconStyle={{ tintColor: "white" } as ImageStyle}
+                        tickIconStyle={{ tintColor: "white" } as ImageStyle}
                     />
                 </View>
 
@@ -94,14 +94,14 @@ const styles = StyleSheet.create({
     dropdownWrapper: {
         width: 130,
         justifyContent: 'center',
-        zIndex:1000
+        zIndex: 1000
     },
 
     dropdown: {
         backgroundColor: '#25272E',
         borderColor: '#444',
         borderRadius: 8,
-        height: 40, 
+        height: 40,
         paddingHorizontal: 10,
     },
 

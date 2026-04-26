@@ -12,16 +12,16 @@ export default function PrivacyComponent() {
         <View>
             <Text style={styles.textHeading} >Privacy</Text>
             <View style={styles.boxContainer}>
-                    <View style={styles.boxContainerRow} >
-                        <View style={styles.boxContainerTextBox} >
-                            <Text style={styles.boxMainText} >Delete Account & Data</Text>
-                            <Text style={styles.boxSecondaryText}>Once deleted, your account and data cannot be recovered.</Text>
-                        </View>
-                        <View style={styles.deleteTextBox} >
-                            <Text style={styles.deleteText}>Delete...</Text>
-                        </View>
+                <View style={styles.boxContainerRow} >
+                    <View style={styles.boxContainerTextBox} >
+                        <Text style={styles.boxMainText} >Delete Account & Data</Text>
+                        <Text style={styles.boxSecondaryText}>Once deleted, your account and data cannot be recovered.</Text>
                     </View>
-               
+                    <View style={styles.deleteTextBox} >
+                        <Text style={styles.deleteText}>Delete...</Text>
+                    </View>
+                </View>
+
                 <View style={styles.hr} />
                 <View>
                     <View style={styles.boxContainerTextBox}>

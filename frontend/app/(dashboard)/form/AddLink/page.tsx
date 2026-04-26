@@ -1,8 +1,8 @@
 import { api_url } from "@/utils/contants";
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, useFonts } from "@expo-google-fonts/inter";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useState } from "react";
+import { UserContext } from "@/context/UserContext";
+import React, { useContext, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -28,13 +28,14 @@ const AddUrlScreen = () => {
   const [url, setUrl] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [lastProcessedUrl, setLastProcessedUrl] = useState("");
+  const { fetchWithAuth } = useAuth();
+  const userCtx = useContext(UserContext);
+
   const [processingResult, setProcessingResult] = useState<{
     success: boolean;
     documentsProcessed?: number;
     message: string;
   } | null>(null);
-
-  const { fetchWithAuth } = useAuth();
 
   const validateUrl = (inputUrl: string): boolean => {
     try {
@@ -78,6 +79,7 @@ const AddUrlScreen = () => {
         });
         setLastProcessedUrl(url);
         setUrl("");
+        userCtx?.setStatsUpdated(true);
       } else {
         setProcessingResult({
           success: false,

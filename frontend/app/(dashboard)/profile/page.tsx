@@ -47,11 +47,11 @@ const ProfilePage = () => {
       return;
     }
 
-    
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1], 
+      aspect: [1, 1],
       quality: 0.7,
     });
 
@@ -77,7 +77,7 @@ const ProfilePage = () => {
       </View>
 
       <View style={styles.userDetailsContainer}>
-        {}
+        { }
         <Pressable onPress={pickImage}>
           <View style={styles.pictureContainer}>
             <Text style={styles.pictureText}>Profile Picture</Text>
@@ -94,7 +94,7 @@ const ProfilePage = () => {
 
         <View style={styles.hr} />
 
-        {}
+        { }
         <Pressable onPress={() => handleOpenModal("Email")}>
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldLabel}>Email</Text>
@@ -106,7 +106,7 @@ const ProfilePage = () => {
 
         <View style={styles.hr} />
 
-        {}
+        { }
         <Pressable onPress={() => handleOpenModal("Full Name")}>
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldLabel}>Full Name</Text>
@@ -118,7 +118,7 @@ const ProfilePage = () => {
 
         <View style={styles.hr} />
 
-        {}
+        { }
         <Pressable onPress={() => handleOpenModal("Username")}>
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldLabel}>Username</Text>
@@ -134,7 +134,7 @@ const ProfilePage = () => {
         <View style={styles.hr} />
       </View>
 
-      {}
+      { }
       <Modal visible={modalVisible} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
@@ -363,8 +363,8 @@ const styles = StyleSheet.create({
   deleteText: {
     color: "#F4817E"
   },
-  accountDelete:{
-    marginTop:30,
+  accountDelete: {
+    marginTop: 30,
     marginHorizontal: 20,
   }
 });

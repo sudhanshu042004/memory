@@ -6,9 +6,9 @@ import {
   useFonts,
 } from "@expo-google-fonts/inter";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserContext } from "@/context/UserContext";
 import * as DocumentPicker from "expo-document-picker";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -31,13 +31,14 @@ const AddPdfScreen = () => {
 
   const [pdfFile, setPdfFile] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { fetchWithAuth } = useAuth();
+  const userCtx = useContext(UserContext);
+
   const [processingResult, setProcessingResult] = useState<{
     success: boolean;
     message: string;
     documentsProcessed?: number;
   } | null>(null);
-
-  const { fetchWithAuth } = useAuth();
 
   if (!fontsLoaded) return null;
 
@@ -91,6 +92,7 @@ const AddPdfScreen = () => {
           message: data.message,
         });
         setPdfFile(null);
+        userCtx?.setStatsUpdated(true);
       } else {
         setProcessingResult({
           success: false,

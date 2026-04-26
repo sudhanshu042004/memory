@@ -5,6 +5,8 @@ import { createContext, ReactNode, useCallback, useEffect, useState } from "reac
 interface UserContextType {
   user: User | null;
   isLoading: boolean;
+  statsUpdated: boolean;
+  setStatsUpdated: (val: boolean) => void;
   refreshUser: () => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -16,7 +18,7 @@ function decodeJwtPayload(token: string): any | null {
   try {
     const parts = token.split(".");
     if (parts.length !== 3) return null;
-    
+
     const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
     const jsonStr = atob(base64);
     return JSON.parse(jsonStr);
@@ -28,6 +30,7 @@ function decodeJwtPayload(token: string): any | null {
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [statsUpdated, setStatsUpdated] = useState(false);
 
   const fetchUser = useCallback(async () => {
     try {
@@ -43,7 +46,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      
+
       if (payload.exp && Date.now() / 1000 > payload.exp) {
         await AsyncStorage.removeItem("session");
         setUser(null);
@@ -76,7 +79,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, [fetchUser]);
 
   return (
-    <UserContext.Provider value={{ user, isLoading, refreshUser: fetchUser, logout }}>
+    <UserContext.Provider value={{ user, isLoading, statsUpdated, setStatsUpdated, refreshUser: fetchUser, logout }}>
       {children}
     </UserContext.Provider>
   );
