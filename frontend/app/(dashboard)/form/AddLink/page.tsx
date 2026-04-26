@@ -15,6 +15,7 @@ import {
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "@/context/auth";
 
 
 const AddUrlScreen = () => {
@@ -32,6 +33,8 @@ const AddUrlScreen = () => {
     documentsProcessed?: number;
     message: string;
   } | null>(null);
+
+  const { fetchWithAuth } = useAuth();
 
   const validateUrl = (inputUrl: string): boolean => {
     try {
@@ -57,12 +60,10 @@ const AddUrlScreen = () => {
     setProcessingResult(null);
 
     try {
-      const token=await AsyncStorage.getItem("session")
-      const response = await fetch(api_url+'/webExtract', {
+      const response = await fetchWithAuth(`${process.env.EXPO_PUBLIC_API_BASE}/webExtract`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Cookie":`token=${token}`
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ url: url.trim() }),
       });
@@ -277,7 +278,7 @@ const AddUrlScreen = () => {
           </>
         )}
 
-        {/* Invalid URL Warning */}
+        {}
         {url.length > 0 && !validateUrl(url) && (
           <>
             <Text style={styles.textHeading}>Invalid URL</Text>
@@ -285,7 +286,7 @@ const AddUrlScreen = () => {
               <View style={styles.warningContainer}>
                 <Ionicons name="warning-outline" color={"#F4817E"} size={24} />
                 <Text style={styles.warningText}>
-                  Please enter a valid URL starting with http:// or https://
+                  Please enter a valid URL starting with http:
                 </Text>
               </View>
             </View>

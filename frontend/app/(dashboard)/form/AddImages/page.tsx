@@ -9,12 +9,13 @@ import {
   Alert,
   Image,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "@/context/auth";
 
 
 const AddImageScreen = () => {
@@ -26,6 +27,7 @@ const AddImageScreen = () => {
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const { fetchWithAuth } = useAuth();
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -56,14 +58,10 @@ const AddImageScreen = () => {
     } as any);
 
     try {
-      const token=await AsyncStorage.getItem('session')
-      const response = await fetch(api_url+'/imagePost', {
+      const response = await fetchWithAuth(`${process.env.EXPO_PUBLIC_API_BASE}/imagePost`, {
         method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "Cookie":`token=${token}`
-        },
         body: formData,
+        
       });
 
       const data = await response.json();
@@ -170,7 +168,7 @@ const AddImageScreen = () => {
           </>
         )}
 
-        {/* Empty State */}
+        {}
         {!selectedImage && (
           <>
             <Text style={styles.textHeading}>Getting Started</Text>
