@@ -58,7 +58,22 @@ pdfRouter.post('/', upload.single('pdfFile'), async (req: Request, res: Response
 
         await vectoreStore.addDocuments(docWithMetaData);
 
-        fs.unlink(path.join(__dirname, "../uploads", req.file.filename), () => { });
+        // Also save to Prisma Memory table so it appears in stats and dashboard
+        if (req.userId) {
+            import("../prisma/client.js").then(async ({ prisma }) => {
+                await prisma.memory.create({
+                    data: {
+                        userId: req.userId!,
+                        type: "pdf",
+                        title: req.file?.originalname || "PDF Document",
+                        content: docs[0]?.pageContent ? docs[0].pageContent.substring(0, 100) : "A PDF document",
+                        isFavorite: false,
+                    }
+                });
+            }).catch(e => logger.error("Failed to save memory to Prisma:", e));
+        }
+
+        fs.unlink(path.join(__dirname, "../uploads", req.file!.filename), () => { });
         res.json({
             "message": "file recieved",
             "status": "statusOK",

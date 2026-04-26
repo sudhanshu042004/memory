@@ -12,19 +12,15 @@ import {
   messagesStateReducer,
   StateGraph,
 } from "@langchain/langgraph";
-import { pull } from "langchain/hub";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
 import * as prompts from "./Prompts"
 
-const promptTemplate = await pull<ChatPromptTemplate>("rlm/rag-prompt");
-
 export const llm = new ChatGoogleGenerativeAI({
-  model: "gemini-2.5-flash",
+  model: "gemini-2.5-flash-lite",
   temperature: 0.5,
 });
 
 export const imageLLM = new ChatGoogleGenerativeAI({
-  model: "gemini-2.0-flash",
+  model: "gemini-2.5-flash-lite",
   temperature: 0.5,
   maxOutputTokens: 150,
 });
@@ -38,7 +34,7 @@ export const embeddings = new GoogleGenerativeAIEmbeddings({
 const pinecone = new PinconeClient({
   apiKey: process.env.PINECONE_KEY!,
 });
-const index = pinecone.index("ai-memory-with");
+const index = pinecone.index("ai-memory");
 
 export const vectoreStore = new PineconeStore(embeddings, {
   pineconeIndex: index,
@@ -62,14 +58,14 @@ const StateAnnotation = Annotation.Root({
   }),
   standaloneQuestion: Annotation<string>,
   answer: Annotation<string>,
-  userId: Annotation<number>,
+  userId: Annotation<string>,
   needsRetrieval: Annotation<boolean>({
     reducer: (x, y) => y ?? x,
     default: () => false,
   }),
 });
 
-// Node 1 : classify if the query needs retireval or not
+
 const classifyQueryNode = async (state: typeof StateAnnotation.State) => {
 
 
@@ -93,12 +89,12 @@ const rewriteQueryNode = async (state: typeof StateAnnotation.State) => {
   }
 
   const chatHistoryStr = state.chatHistory
-    .slice(-6) // Only last 6 messages for context
+    .slice(-6) 
     .map((msg) => `${msg._getType()}: ${msg.content}`)
     .join("\n");
 
 
-  const response = await llm.invoke([{ role: "user", content: prompts.rewritePrompt(chatHistoryStr,state.question) }]);
+  const response = await llm.invoke([{ role: "user", content: prompts.rewritePrompt(chatHistoryStr, state.question) }]);
 
   const standaloneQuestion = response.content as string;
 
@@ -113,12 +109,12 @@ const retrieveNode = async (state: typeof StateAnnotation.State) => {
   try {
     const queryToUse = state.standaloneQuestion || state.question;
 
-    // Add metadata filter for userId if provided
+    
     const filter = state.userId ? { userId: state.userId } : undefined;
 
     const retrievedDocs = await vectoreStore.similaritySearch(
       queryToUse,
-      5, // Retrieve top 5 most relevant
+      5, 
       filter
     );
 
@@ -130,24 +126,24 @@ const retrieveNode = async (state: typeof StateAnnotation.State) => {
   }
 };
 
-// Node 4: Generate answer
+
 const generateNode = async (state: typeof StateAnnotation.State) => {
-  // For conversational queries, respond naturally with chat history
+  
   if (!state.needsRetrieval) {
     const chatHistoryStr = state.chatHistory
       .slice(-6)
       .map((msg) => `${msg._getType()}: ${msg.content}`)
       .join("\n");
 
-    
+
     const response = await llm.invoke([
-      { role: "user", content: prompts.conversationalPrompt(chatHistoryStr,state.question) },
+      { role: "user", content: prompts.conversationalPrompt(chatHistoryStr, state.question) },
     ]);
 
     return { answer: response.content as string };
   }
 
-  // For retrieval queries, use RAG
+  
   if (!state.context || state.context.length === 0) {
     const fallbackResponse = await llm.invoke([
       {
@@ -161,17 +157,14 @@ const generateNode = async (state: typeof StateAnnotation.State) => {
   const docsContent = state.context
     .map(
       (doc, idx) =>
-        `[Document ${idx + 1}]\nsource: ${
-          doc.metadata.source || "unknown"
+        `[Document ${idx + 1}]\nsource: ${doc.metadata.source || "unknown"
         }\ncontent: ${doc.pageContent}`
     )
     .join("\n\n");
 
-
-  const messages = await promptTemplate.invoke({
-    question: state.standaloneQuestion || state.question,
-    context: docsContent,
-  });
+  const messages = [
+    { role: "user", content: prompts.ragPrompt(docsContent, state.standaloneQuestion || state.question) }
+  ];
 
   const response = await llm.invoke(messages);
   return { answer: response.content as string };

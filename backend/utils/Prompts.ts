@@ -1,4 +1,4 @@
-//classification
+
 export const classificationPrompt = (
   question: string
 ) => `Analyze this user message and determine if it requires searching a knowledge base or if it's a conversational message.
@@ -19,7 +19,7 @@ A query does NOT need retrieval if it:
 
 Respond with only "RETRIEVE" or "CONVERSATIONAL"`;
 
-//rephrase
+
 export const rewritePrompt = (
   chatHistoryStr: string,
   question: string
@@ -32,7 +32,7 @@ export const rewritePrompt = (
 
   Standalone Question:`;
 
-//conversation
+
 export const conversationalPrompt = (
   chatHistoryStr: string,
   question: string
@@ -42,3 +42,19 @@ ${chatHistoryStr ? `Chat History:\n${chatHistoryStr}\n` : ""}
 User: ${question}
 
 Respond naturally and conversationally. If the user is sharing information, acknowledge it warmly.`;
+
+//rag setup
+export const ragPrompt = (
+  context: string,
+  question: string
+) => `You are an intelligent Study Assistant bridging the gap between a user's memory and their questions. 
+Use the provided pieces of retrieved context to answer the user's question accurately and helpfully. 
+If you don't know the answer or if the context doesn't contain the answer, just say that you don't know. Do not hallucinate. 
+You can respond with as much detail as necessary. Feel free to use bullet points or formatting if it makes the answer clearer.
+
+Context:
+${context}
+
+User Question: ${question}
+
+Helpful Answer:`;
